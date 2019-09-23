@@ -14,14 +14,14 @@ import br.com.maxgontijo.pmgo.planilhasveiculos.repository.RadarRepository;
 
 @ManagedBean
 @ViewScoped
-public class RadarBean {
+public class RadarBean extends GenericJsfBean {
 	private @Autowired RadarRepository radarRepository;
 
 	private List<Radar> radares;
 
 	@PostConstruct
 	public void init() {
-		this.radares = this.radarRepository.findAll(Sort.by("placa"));
+		this.radares = this.radarRepository.findAll(Sort.by("codigo"));
 	}
 
 	public List<Radar> getRegistros() {

@@ -6,7 +6,7 @@ import javax.faces.bean.ViewScoped;
 
 @ManagedBean
 @ViewScoped
-public class UploadArquivosBean {
+public class UploadArquivosBean extends GenericJsfBean {
 	@PostConstruct
 	public void init() {
 	}

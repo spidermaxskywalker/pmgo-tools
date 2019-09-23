@@ -14,7 +14,7 @@ import br.com.maxgontijo.pmgo.planilhasveiculos.repository.VeiculoRepository;
 
 @ManagedBean
 @ViewScoped
-public class VeiculoBean {
+public class VeiculoBean extends GenericJsfBean {
 	private @Autowired VeiculoRepository veiculoRepository;
 
 	private List<Veiculo> veiculos;

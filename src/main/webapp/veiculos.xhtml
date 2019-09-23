@@ -11,8 +11,15 @@
 	</h:head>
 	<h:body>
 		<h:form>
+			<p:menubar>
+				<p:menuitem value="Início" action="index?faces-redirect=true"></p:menuitem>
+				<p:menuitem value="Veículos" action="veiculos?faces-redirect=true"></p:menuitem>
+				<p:menuitem value="Radares" action="radares?faces-redirect=true"></p:menuitem>
+				<p:menuitem value="Novos Arquivos" action="upload-arquivos?faces-redirect=true"></p:menuitem>
+			</p:menubar>
+		
 			<p:panel header="Veículos" >
-				<p:dataTable value="#{veiculoController.registros}" var="reg">
+				<p:dataTable value="#{veiculoBean.registros}" var="reg">
 					<p:column headerText="Placa">
 						#{reg.placa}
 					</p:column>
