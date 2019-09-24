@@ -24,7 +24,7 @@ public class Veiculo extends Model<Integer> {
 		return this.id;
 	}
 
-	@Column(name = "placa", unique = true, length = 6, nullable = false)
+	@Column(name = "placa", unique = true, length = 7, nullable = false)
 	public String getPlaca() {
 		return placa;
 	}

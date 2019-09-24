@@ -6,4 +6,5 @@ import br.com.maxgontijo.pmgo.planilhasveiculos.model.Veiculo;
 
 @Repository
 public interface VeiculoRepository extends MaxGenericJpaRepository<Veiculo, Integer> {
+	public Veiculo findByPlaca(String placa);
 }

@@ -7,25 +7,30 @@
 	<h:head>
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-		<title>Upload Arquivos</title>
+		<title>Veículos</title>
 	</h:head>
 	<h:body>
-		<h:form enctype="multipart/form-data">
+		<h:form>
 			<p:menubar>
 				<p:menuitem value="Início" action="index?faces-redirect=true"></p:menuitem>
 				<p:menuitem value="Veículos" action="veiculos?faces-redirect=true"></p:menuitem>
 				<p:menuitem value="Radares" action="radares?faces-redirect=true"></p:menuitem>
 				<p:menuitem value="Novos Arquivos" action="upload-arquivos?faces-redirect=true"></p:menuitem>
 			</p:menubar>
-			
-			<p:panel header="Upload Arquivos" >
-				<h:form enctype="multipart/form-data">
-					<p:messages autoUpdate="true" showDetail="true" />
-					<p:fileUpload
-						fileUploadListener="#{uploadArquivosBean.handleFileUpload}"
-						mode="advanced" dragDropSupport="false" multiple="true"
-						sizeLimit="100000" allowTypes="/(\.|\/)(xlsx|xltx)$/" />
-				</h:form>
+		
+			<p:panel header="Veículos - Registros" >
+				<p:dataTable value="#{veiculoBean.registros}" var="reg" paginator="true" rows="10">
+					<p:column headerText="Placa" filterBy="placa" filterMatchMode="contains">
+						#{reg.placa}
+					</p:column>
+					<p:column headerText="Ações">
+						<p:commandButton value="Registros" type="button" onclick="PF('veiculoRegistros').show();" />
+					</p:column>
+				</p:dataTable>
+				
+				<p:dialog header="Effects" modal="true" widgetVar="veiculoRegistros" height="100" dynamic="true">
+				    <h:outputText value="This dialog has nice effects." />
+				</p:dialog>
 			</p:panel>
 		</h:form>
 	</h:body>

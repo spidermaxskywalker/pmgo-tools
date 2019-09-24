@@ -23,7 +23,7 @@ public class VeiculoRadar extends Model<Integer> {
 
 	private Veiculo veiculo;
 	private Radar radar;
-	private Date datahora;
+	private Date dataHora;
 	private String sentido;
 
 	@Override
@@ -35,7 +35,7 @@ public class VeiculoRadar extends Model<Integer> {
 		return this.id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "fk_veiculo", nullable = false, updatable = false)
 	public Veiculo getVeiculo() {
 		return veiculo;
@@ -45,7 +45,7 @@ public class VeiculoRadar extends Model<Integer> {
 		this.veiculo = veiculo;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "fk_radar", nullable = false, updatable = false)
 	public Radar getRadar() {
 		return radar;
@@ -57,12 +57,12 @@ public class VeiculoRadar extends Model<Integer> {
 
 	@Column(name = "data_hora", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date getDatahora() {
-		return datahora;
+	public Date getDataHora() {
+		return dataHora;
 	}
 
-	public void setDatahora(Date datahora) {
-		this.datahora = datahora;
+	public void setDataHora(Date dataHora) {
+		this.dataHora = dataHora;
 	}
 
 	@Column(name = "sentido", length = 256)

@@ -10,7 +10,7 @@
 		<title>Veículos</title>
 	</h:head>
 	<h:body>
-		<h:form>
+		<h:form id="form">
 			<p:menubar>
 				<p:menuitem value="Início" action="index?faces-redirect=true"></p:menuitem>
 				<p:menuitem value="Veículos" action="veiculos?faces-redirect=true"></p:menuitem>
@@ -18,12 +18,40 @@
 				<p:menuitem value="Novos Arquivos" action="upload-arquivos?faces-redirect=true"></p:menuitem>
 			</p:menubar>
 		
-			<p:panel header="Veículos" >
-				<p:dataTable value="#{veiculoBean.registros}" var="reg">
-					<p:column headerText="Placa">
+			<p:panel header="Veículos">
+				<p:dataTable value="#{veiculoBean.registros}" var="reg" paginator="true" rows="10">
+					<p:column headerText="Placa" filterBy="placa" filterMatchMode="contains">
 						#{reg.placa}
 					</p:column>
+					<p:column headerText="Ações">
+						<p:commandButton value="Registros" actionListener="#{veiculoBean.showRegistrosVeiculo}" oncomplete="PF('veiculoRegistros').show()" update=":#{p:component('dialogDetalhes')}">
+							<f:attribute value="#{reg}" name="registro"></f:attribute>
+						</p:commandButton>
+					</p:column>
 				</p:dataTable>
+			</p:panel>
+			
+			<p:dialog id="dialogDetalhes" width="800" header="Veículo #{registro.placa}" modal="true" widgetVar="veiculoRegistros" dynamic="true" closable="false">
+				<p:dataTable value="#{veiculoBean.registrosVeiculo}" var="reg" scrollable="true" scrollHeight="300">
+					<p:column headerText="Radar">
+						#{reg.radar.codigo}
+					</p:column>
+					
+					<p:column headerText="Data/hora">
+						<h:outputText value="#{reg.dataHora}"></h:outputText>
+					</p:column>
+					
+					<p:column headerText="Sentido">
+						<h:outputText value="#{reg.sentido}"></h:outputText>
+					</p:column>
+				</p:dataTable>
+				<p:commandButton value="Fechar" actionListener="#{veiculoBean.hideRegistrosVeiculo}" oncomplete="PF('veiculoRegistros').hide()"/>
+			</p:dialog>
+			
+			<p:separator rendered="#{veiculoBean.registro != null}"></p:separator>
+			
+			<p:panel rendered="#{veiculoBean.registro != null}">
+				
 			</p:panel>
 		</h:form>
 	</h:body>
