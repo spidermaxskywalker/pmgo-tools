@@ -12,13 +12,27 @@
 	<h:body>
 		<h:form>
 			<p:menubar>
-				<p:menuitem value="Início" action="index?faces-redirect=true"></p:menuitem>
-				<p:menuitem value="Veículos" action="veiculos?faces-redirect=true"></p:menuitem>
-				<p:menuitem value="Radares" action="radares?faces-redirect=true"></p:menuitem>
-				<p:menuitem value="Novos Arquivos" action="upload-arquivos?faces-redirect=true"></p:menuitem>
+				<p:menuitem value="Início"   icon="fa fa-home"   action="index?faces-redirect=true" />
+				<p:menuitem value="Veículos" icon="fa fa-car"    action="veiculos?faces-redirect=true" />
+				<p:menuitem value="Radares"  icon="fa fa-camera" action="radares?faces-redirect=true" />
+				
+				<f:facet name="options">
+		            <p:commandButton value="Novos Arquivos" icon="fa fa-fw fa-upload" action="upload-arquivos?faces-redirect=true" />
+		        </f:facet>
 			</p:menubar>
 		
 			<p:panel header="Veículos - Registros" >
+				<p:panel header="Filtros">
+					<p:panelGrid columns="2">
+						<h:outputLabel value="Placa Veículo" />
+						<p:inputMask mask="aaa-9999" />
+						
+						<h:outputLabel value="Código Radar" />
+						<p:inputText />
+					</p:panelGrid>
+					<p:commandButton value="Filrar" />
+				</p:panel>
+			
 				<p:dataTable value="#{veiculoBean.registros}" var="reg" paginator="true" rows="10">
 					<p:column headerText="Placa" filterBy="placa" filterMatchMode="contains">
 						#{reg.placa}

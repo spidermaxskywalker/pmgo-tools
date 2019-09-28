@@ -70,6 +70,7 @@ public class Application extends SpringBootServletInitializer {
 			@Override
 			public void onStartup(ServletContext servletContext) throws ServletException {
 				servletContext.setInitParameter("primefaces.UPLOADER", "commons");
+				servletContext.setInitParameter("primefaces.FONT_AWESOME", "true");
 			}
 		};
 	}
