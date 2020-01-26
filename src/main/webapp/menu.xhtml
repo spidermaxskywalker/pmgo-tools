@@ -1,0 +1,19 @@
+<f:view xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
+	<h:form id="formMenu">
+		<p:menubar>
+			<p:menuitem rendered="false" value="Início"   icon="fa fa-home"   action="index?faces-redirect=true" />
+			<p:menuitem rendered="false" value="Veículos" icon="fa fa-car"    action="veiculos?faces-redirect=true" />
+			<p:menuitem rendered="false" value="Radares"  icon="fa fa-camera" action="radares?faces-redirect=true" />
+			<p:menuitem value="Recorrencias"  icon="fa fa-camera" action="verificar-recorrencia?faces-redirect=true" />
+			
+			<f:facet name="options">
+	           <p:commandButton rendered="false" value="Novos Arquivos" icon="fa fa-fw fa-upload" action="upload-arquivos?faces-redirect=true" />
+	        </f:facet>
+		</p:menubar>
+	</h:form>
+</f:view>

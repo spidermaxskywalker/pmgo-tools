@@ -11,16 +11,6 @@
 		<link type="text/css" rel="stylesheet" href="css/styles.css" />
 	</h:head>
 	<h:body>
-		<h:form>
-			<p:menubar>
-				<p:menuitem value="Início"   icon="fa fa-home"   action="index?faces-redirect=true" />
-				<p:menuitem value="Veículos" icon="fa fa-car"    action="veiculos?faces-redirect=true" />
-				<p:menuitem value="Radares"  icon="fa fa-camera" action="radares?faces-redirect=true" />
-				
-				<f:facet name="options">
-		            <p:commandButton value="Novos Arquivos" icon="fa fa-fw fa-upload" action="upload-arquivos?faces-redirect=true" />
-		        </f:facet>
-			</p:menubar>
-		</h:form>
+		<ui:include src="menu.xhtml"></ui:include>
 	</h:body>
 </f:view>
