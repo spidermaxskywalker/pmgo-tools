@@ -12,7 +12,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.maxgontijo.pmgo.planilhasveiculos.dto.RecorrenciaDto;
@@ -23,21 +22,12 @@ import br.com.maxgontijo.pmgo.planilhasveiculos.service.ProcessarArquivoRecorren
 public class VerificarRecorrenciaBean extends GenericJsfBean {
 	private @Autowired ProcessarArquivoRecorrenciaService processarArquivoRecorrenciaService;
 
-	private UploadedFile file;
 	private List<RecorrenciaDto> recorrencias;
 	private List<Integer> listas;
 	private Integer totalOcorrencias;
 
 	@PostConstruct
 	public void init() {
-	}
-
-	public UploadedFile getFile() {
-		return file;
-	}
-
-	public void setFile(UploadedFile file) {
-		this.file = file;
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
@@ -67,6 +57,12 @@ public class VerificarRecorrenciaBean extends GenericJsfBean {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", event.getFile().getFileName() + " NÃO foi processado.");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
+	}
+
+	public void limpar() {
+		this.recorrencias = null;
+		this.listas = null;
+		this.totalOcorrencias = null;
 	}
 
 	public List<Integer> getListas() {

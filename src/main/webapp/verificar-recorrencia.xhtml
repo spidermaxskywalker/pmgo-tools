@@ -8,54 +8,51 @@
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<title>Verificar Recorrência</title>
-		<style>
-			.item-lista-linha {
-				color: #ffffff;
-				background-color: #4444ff;
-				border: 1px solid #2222aa;
-				border-radius: 25%;
-				padding: 2px 5px 2px 5px;
-				margin-right: 5px;
-			}
-		</style>
 	</h:head>
 	<h:body>
 		<ui:include src="menu.xhtml"></ui:include>
 			
-		<p:panel header="Recorrências" >
-			<h:form enctype="multipart/form-data">
-				<p:messages autoUpdate="true" showDetail="true" />
-				<p:fileUpload
-					fileUploadListener="#{verificarRecorrenciaBean.handleFileUpload}"
-					mode="advanced" auto="true" dragDropSupport="false" multiple="false" 
-					sizeLimit="100000" allowTypes="/(\.|\/)(xlsx|xltx)$/" update=":infoRecorrencias,:recorrencias" />
-			</h:form>
+		<p:panel id="content" header="Recorrências" >
+			<h:panelGroup rendered="#{verificarRecorrenciaBean.recorrencias == null}">
+				<h:form enctype="multipart/form-data">
+					<p:messages autoUpdate="true" showDetail="true" />
+					<p:fileUpload
+						fileUploadListener="#{verificarRecorrenciaBean.handleFileUpload}"
+						mode="advanced" auto="true" dragDropSupport="false" multiple="false" 
+						sizeLimit="100000" allowTypes="/(\.|\/)(xlsx|xltx)$/" update=":content"
+						label="Escolha um arquivo XLS" />
+				</h:form>
+			</h:panelGroup>
 			
-			<h:panelGrid id="infoRecorrencias" columns="2">
-				<h:outputLabel value="Quantidade de listas no arquivo: " />
-				<h:outputText value="#{verificarRecorrenciaBean.listas.size()}" />
+			<h:panelGroup rendered="#{verificarRecorrenciaBean.recorrencias != null}">
+				<h:panelGrid id="infoRecorrencias" columns="2">
+					<h:outputLabel value="Quantidade de listas no arquivo: " />
+					<h:outputText value="#{verificarRecorrenciaBean.listas.size()}" />
+					
+					<h:outputLabel value="Quantidade de registros em cada lista: " />
+					<h:column>
+						<ui:repeat var="l" value="#{verificarRecorrenciaBean.listas}" varStatus="status">
+							<span class="item-lista-linha-qtde" title="Na lista #{status.index + 1} foram encontrados #{l} registros.">##{status.index + 1} <i class="fas fa-arrow-right"/> #{l}</span>
+						</ui:repeat>
+					</h:column>
+					<p:commandButton value="Limpar" icon="fas fa-trash" actionListener="#{verificarRecorrenciaBean.limpar}" update=":content"/>
+					<h:column />
+				</h:panelGrid>
 				
-				<h:outputLabel value="Quantidade de registros em cada lista: " />
-				<h:column>
-					<ui:repeat var="l" value="#{listas}">
-						<span class="item-lista-linha">#{l}</span>
-					</ui:repeat>
-				</h:column>
-			</h:panelGrid>
-			
-			<p:dataTable id="recorrencias" value="#{verificarRecorrenciaBean.recorrencias}" var="reg">
-				<p:column headerText="Nome">
-					#{reg.nome}
-				</p:column>
-				<p:column headerText="Quantidade de listas em que foi encontrado">
-					#{reg.listas.size()}
-				</p:column>
-				<p:column headerText="Listas em que foi encontrado">
-					<ui:repeat var="l" value="#{reg.listas}">
-						<span class="item-lista-linha">#{l + 1}</span>
-					</ui:repeat>
-				</p:column>
-			</p:dataTable>
+				<p:dataTable id="recorrencias" value="#{verificarRecorrenciaBean.recorrencias}" var="reg">
+					<p:column headerText="Nome da pessoa" sortBy="#{reg.nome}">
+						#{reg.nome}
+					</p:column>
+					<p:column headerText="Quantidade de listas em que a pessoa foi encontrada" sortBy="#{reg.listas.size()}">
+						#{reg.listas.size()}
+					</p:column>
+					<p:column headerText="Listas em que a pessoa foi encontrada">
+						<ui:repeat var="l" value="#{reg.listas}">
+							<span class="item-lista-linha">##{l + 1}</span>
+						</ui:repeat>
+					</p:column>
+				</p:dataTable>
+			</h:panelGroup>
 		</p:panel>
 	</h:body>
 </f:view>

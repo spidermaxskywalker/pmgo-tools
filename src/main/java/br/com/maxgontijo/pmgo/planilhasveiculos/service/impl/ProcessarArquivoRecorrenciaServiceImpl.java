@@ -114,10 +114,6 @@ public class ProcessarArquivoRecorrenciaServiceImpl implements ProcessarArquivoR
 	}
 
 	private String limparNome(String nome) {
-		int index = nome.lastIndexOf('-');
-		if (index == 0) {
-			nome = nome.substring(0, index);
-		}
 		nome = Normalizer
 				.normalize(nome, Normalizer.Form.NFD)
 				.replaceAll("[^\\p{ASCII}]", "");
