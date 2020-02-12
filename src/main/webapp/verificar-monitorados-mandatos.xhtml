@@ -1,0 +1,121 @@
+<f:view xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
+	<h:head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title>Verificar Recorrência</title>
+	</h:head>
+	<h:body>
+		<ui:include src="menu.xhtml"></ui:include>
+			
+		<p:panel id="content" header="Recorrências" >
+			<h:panelGroup>
+				<h:form enctype="multipart/form-data">
+					<p:messages autoUpdate="true" showDetail="true" />
+					
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Arquivo Monitorados:" />
+						<h:column>
+							<p:fileUpload rendered="#{verificarMonitoradosMandatosBean.fileMonitorados == null}"
+								fileUploadListener="#{verificarMonitoradosMandatosBean.handleFileUploadMonitorados}"
+								mode="advanced" auto="true" dragDropSupport="false" multiple="false" 
+								allowTypes="/(\.|\/)(csv)$/" update=":content"
+								label="Arquivo Monitorados - CSV" />
+							<h:outputText rendered="#{verificarMonitoradosMandatosBean.fileMonitorados != null}" value="#{verificarMonitoradosMandatosBean.fileMonitorados.fileName}" />
+						</h:column>
+					
+						<h:outputLabel value="Semarador CSV - Arquivo Monitorados:" />
+						<p:selectOneMenu id="separadorMonitorados" disabled="#{verificarMonitoradosMandatosBean.fileMonitorados != null}" value="#{verificarMonitoradosMandatosBean.separadorMonitorados}">
+							<f:selectItem itemLabel=";" itemValue=";" />
+							<f:selectItem itemLabel="," itemValue="," />
+						</p:selectOneMenu>
+					
+						<h:outputLabel value="Arquivo Monitorados:" />
+						<h:column>
+							<p:fileUpload rendered="#{verificarMonitoradosMandatosBean.fileMandatos == null}"
+								fileUploadListener="#{verificarMonitoradosMandatosBean.handleFileUploadMandatos}"
+								mode="advanced" auto="true" dragDropSupport="false" multiple="false" 
+								allowTypes="/(\.|\/)(csv)$/" update=":content"
+								label="Arquivo Mandatos - CSV" />
+							<h:outputText rendered="#{verificarMonitoradosMandatosBean.fileMandatos != null}" value="#{verificarMonitoradosMandatosBean.fileMandatos.fileName}" />
+						</h:column>
+					
+						<h:outputLabel value="Semarador CSV - Arquivo Mandatos:" />
+						<p:selectOneMenu id="separadorMandato" disabled="#{verificarMonitoradosMandatosBean.fileMandatos != null}" value="#{verificarMonitoradosMandatosBean.separadorMandato}">
+							<f:selectItem itemLabel=";" itemValue=";" />
+							<f:selectItem itemLabel="," itemValue="," />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					
+					<p:commandButton disabled="#{verificarMonitoradosMandatosBean.separadorMonitorados == null || verificarMonitoradosMandatosBean.separadorMandato == null || verificarMonitoradosMandatosBean.mandatos != null}" value="Processar" actionListener="#{verificarMonitoradosMandatosBean.processar}" process="@this,separadorMonitorados,separadorMandato" update=":content" />
+					<p:commandButton value="Limpar" icon="fas fa-trash" actionListener="#{verificarMonitoradosMandatosBean.limpar}" update=":content"/>
+				</h:form>
+			</h:panelGroup>
+			
+			<h:panelGroup rendered="#{verificarMonitoradosMandatosBean.mandatos != null}">
+				<h:form>
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Quantidade de mandatos retornados: " />
+						<h:outputText value="#{verificarMonitoradosMandatosBean.mandatos.size()}" />
+					</h:panelGrid>
+					
+					<p:dataTable id="tblMandatos" value="#{verificarMonitoradosMandatosBean.mandatos}" var="reg">
+						<f:facet name="header">
+							<tr>
+								<th colspan="5">
+									<div style="text-align: right;">
+										<h:outputLabel value="Exportar para: " />
+									    
+									    <h:commandLink style="text-decoration: none;" title="Documento PDF">
+									    	<span class="fa-stack">
+												<i class="far fa-circle fa-stack-2x"></i>
+												<i class="fas fa-file-pdf fa-stack-1x"></i>
+											</span>
+									        <p:dataExporter type="pdf" target="tblMandatos" fileName="mandatos" options="#{verificarMonitoradosMandatosBean.pdfOpt}"/>
+									    </h:commandLink>
+									    
+									    <h:commandLink style="text-decoration: none;" title="Planilha XLSX">
+									    	<span class="fa-stack">
+												<i class="far fa-circle fa-stack-2x"></i>
+												<i class="fas fa-file-excel fa-stack-1x"></i>
+											</span>
+									        <p:dataExporter type="xlsxstream" target="tblMandatos" fileName="mandatos" options="#{verificarMonitoradosMandatosBean.excelOpt}"/>
+									    </h:commandLink>
+									 
+									    <h:commandLink style="text-decoration: none;" title="Arquivo CSV">
+									        <span class="fa-stack">
+												<i class="far fa-circle fa-stack-2x"></i>
+												<i class="fas fa-file-csv fa-stack-1x"></i>
+											</span>
+									        <p:dataExporter type="csv" target="tblMandatos" fileName="mandatos" />
+									    </h:commandLink>
+						            </div>
+					            </th>
+				            </tr>
+						</f:facet>
+					
+						<p:column headerText="Nome da pessoa" sortBy="#{reg.monitorado.nome}">
+							<h:outputText value="#{reg.monitorado.nome}"/>
+						</p:column>
+						<p:column headerText="Número Mandato" sortBy="#{reg.numero}">
+							<h:outputText value="#{reg.numero}"/>
+						</p:column>
+						<p:column headerText="ID Monitoramento" sortBy="#{reg.idMonitorado}">
+							<h:outputText value="#{reg.monitorado.idMonitorado}"/>
+						</p:column>
+						<p:column headerText="Alcunha" sortBy="#{reg.monitorado.alcunha}">
+							<h:outputText value="#{reg.monitorado.alcunha}"/>
+						</p:column>
+						<p:column headerText="Cidade" sortBy="#{reg.monitorado.cidade}">
+							<h:outputText value="#{reg.monitorado.cidade}"/>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</h:panelGroup>
+		</p:panel>
+	</h:body>
+</f:view>
