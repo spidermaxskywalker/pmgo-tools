@@ -7,6 +7,6 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 public class HelloWorldBean {
 	public String getHello() {
-		return "Hello from PrimeFaces and Spring Boot!";
+		return "Ferramentas de Análise de Dados";
 	}
 }
