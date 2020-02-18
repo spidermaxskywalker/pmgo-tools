@@ -25,7 +25,8 @@
 								mode="advanced" auto="true" dragDropSupport="false" multiple="false" 
 								allowTypes="/(\.|\/)(csv|zip)$/" update=":content"
 								label="Arquivo Monitorados - CSV" />
-							<h:outputText rendered="#{verificarMonitoradosMandatosBean.fileMonitorados != null}" value="#{verificarMonitoradosMandatosBean.fileMonitorados.fileName}" />
+								<h:outputText rendered="#{verificarMonitoradosMandatosBean.fileMonitorados != null}" value="#{verificarMonitoradosMandatosBean.fileMonitorados.fileName}" />
+								<p:commandButton rendered="#{verificarMonitoradosMandatosBean.fileMonitorados != null}" style="margin-left: 10px;" value="Mostrar dados" onsuccess="PF('popupMonitorados').show();" actionListener="#{verificarMonitoradosMandatosBean.mostrarArquivoCsvMonitorados}" update=":tblCsvMonitorados" />
 						</h:column>
 					
 						<h:outputLabel value="Separador CSV - Arquivo Monitorados:" />
@@ -42,6 +43,7 @@
 								allowTypes="/(\.|\/)(csv|zip)$/" update=":content"
 								label="Arquivo Mandatos - CSV" />
 							<h:outputText rendered="#{verificarMonitoradosMandatosBean.fileMandatos != null}" value="#{verificarMonitoradosMandatosBean.fileMandatos.fileName}" />
+							<p:commandButton rendered="#{verificarMonitoradosMandatosBean.fileMandatos != null}" style="margin-left: 10px;" value="Mostrar dados" onsuccess="PF('popupMandatos').show();" actionListener="#{verificarMonitoradosMandatosBean.mostrarArquivoCsvMandatos}" update=":tblCsvMandatos" />
 						</h:column>
 					
 						<h:outputLabel value="Separador CSV - Arquivo Mandatos:" />
@@ -68,8 +70,8 @@
 							<tr>
 								<th colspan="5">
 									<div style="text-align: right;">
-										<p:commandButton id="toggler" type="button" value="Colunas" style="float:right;" icon="fas fa-eye" />
-										<p:columnToggler datasource="tblMandatos" trigger="toggler" />
+										<p:commandButton rendered="false" id="toggler" type="button" value="Colunas" style="float:right;" icon="fas fa-eye" />
+										<p:columnToggler rendered="false" datasource="tblMandatos" trigger="toggler" />
 
 										<span>Exportar para:</span>
 									    
@@ -100,30 +102,93 @@
 					            </th>
 				            </tr>
 						</f:facet>
+
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column rowspan="2" headerText="Nome da pessoa" sortBy="#{reg.monitorado.nome}"/>
+								<p:column colspan="3" headerText="Dados vindos do arquivo de Monitorados" />
+								<p:column colspan="3" headerText="Dados vindos do arquivo de Mandatos" />
+							</p:row>
+							<p:row>
+								<p:column headerText="Nome dos pais" sortBy="#{reg.monitorado.nomePais}"/>
+								<p:column headerText="ID Monitoramento" sortBy="#{reg.monitorado.idMonitorado}"/>
+								<p:column headerText="Cidade" sortBy="#{reg.monitorado.cidade}"/>
+								<p:column headerText="Número Mandato" sortBy="#{reg.numero}"/>
+								<p:column headerText="Nome da mãe" sortBy="#{reg.nomeMae}"/>
+								<p:column headerText="Data Expedição MP" sortBy="#{reg.dataExpedicao}"/>
+							</p:row>
+						</p:columnGroup>
 					
 						<p:column headerText="Nome da pessoa" sortBy="#{reg.monitorado.nome}">
 							<h:outputText value="#{reg.monitorado.nome}"/>
 						</p:column>
-						<p:column headerText="Nome da mãe" sortBy="#{reg.nomeMae}">
-							<h:outputText value="#{reg.nomeMae}"/>
+						<p:column headerText="Nome dos pais" sortBy="#{reg.monitorado.nomePais}">
+							<h:outputText value="#{reg.monitorado.nomePais}"/>
+						</p:column>
+						<p:column headerText="ID Monitoramento" sortBy="#{reg.monitorado.idMonitorado}">
+							<h:outputText value="#{reg.monitorado.idMonitorado}"/>
+						</p:column>
+						<p:column headerText="Cidade" sortBy="#{reg.monitorado.cidade}">
+							<h:outputText value="#{reg.monitorado.cidade}"/>
 						</p:column>
 						<p:column headerText="Número Mandato" sortBy="#{reg.numero}">
 							<h:outputText value="#{reg.numero}"/>
 						</p:column>
-						<p:column headerText="ID Monitoramento" sortBy="#{reg.monitorado.idMonitorado}">
-							<h:outputText value="#{reg.monitorado.idMonitorado}"/>
+						<p:column headerText="Nome da mãe" sortBy="#{reg.nomeMae}">
+							<h:outputText value="#{reg.nomeMae}"/>
 						</p:column>
 						<p:column headerText="Data Expedição MP" sortBy="#{reg.dataExpedicao}">
 							<h:outputText value="#{reg.dataExpedicao}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputText>
 						</p:column>
-						<p:column headerText="Cidade" sortBy="#{reg.monitorado.cidade}">
-							<h:outputText value="#{reg.monitorado.cidade}"/>
-						</p:column>
 					</p:dataTable>
 				</h:form>
 			</h:panelGroup>
 		</p:panel>
+
+		<p:dialog widgetVar="popupMonitorados" header="Monitorados - Registros do arquivo CSV" width="1000px" maximizable="true" modal="true" closeOnEscape="true" draggable="false" >
+			<p:dataTable id="tblCsvMonitorados" value="#{verificarMonitoradosMandatosBean.arquivoMonitorados.tuplas}" var="reg" paginator="true" rows="10">
+				<f:facet name="header">
+					<tr>
+						<th colspan="#{verificarMonitoradosMandatosBean.arquivoMonitorados.nomesColunas.size()}">
+							<div style="text-align: right;">
+								<p:commandButton id="togglerArqCsvMonitorados" type="button" value="Colunas" icon="fas fa-eye" />
+								<p:columnToggler datasource="tblCsvMonitorados" trigger="togglerArqCsvMonitorados" />
+							</div>
+						</th>
+					</tr>
+				</f:facet>
+
+				<p:columns value="#{verificarMonitoradosMandatosBean.arquivoMonitorados.nomesColunas}" var="col" columnIndexVar="colIndex" sortBy="#{reg[colIndex]}" visible="#{colIndex le 3}">
+					<f:facet name="header">
+						<h:outputText value="#{col}" />
+					</f:facet>
+					<h:outputText value="#{reg[colIndex]}" />
+				</p:columns>
+			</p:dataTable>
+		</p:dialog>
+
+		<p:dialog widgetVar="popupMandatos" header="Mandatos - Registros do arquivo CSV" width="1000px" maximizable="true" modal="true" closeOnEscape="true" draggable="false" >
+			<p:dataTable id="tblCsvMandatos" value="#{verificarMonitoradosMandatosBean.arquivoMandatos.tuplas}" var="reg" paginator="true" rows="10">
+				<f:facet name="header">
+					<tr>
+						<th colspan="#{verificarMonitoradosMandatosBean.arquivoMandatos.nomesColunas.size()}">
+							<div style="text-align: right;">
+								<p:commandButton id="togglerArqCsvMandatos" type="button" value="Colunas" icon="fas fa-eye" />
+								<p:columnToggler datasource="tblCsvMandatos" trigger="togglerArqCsvMandatos" />
+							</div>
+						</th>
+					</tr>
+				</f:facet>
+
+				<p:columns value="#{verificarMonitoradosMandatosBean.arquivoMandatos.nomesColunas}" var="col" columnIndexVar="colIndex" sortBy="#{reg[colIndex]}" visible="#{colIndex le 3}">
+					<f:facet name="header">
+						<h:outputText value="#{col}" />
+					</f:facet>
+					<h:outputText value="#{reg[colIndex]}" />
+				</p:columns>
+			</p:dataTable>
+		</p:dialog>
 	</h:body>
 </f:view>

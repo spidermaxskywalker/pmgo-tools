@@ -3,6 +3,7 @@ package br.com.maxgontijo.pmgo.planilhasveiculos.dto;
 public class MonitoradoDto extends ModelDto {
 	private Long linhaPlanilha;
 	private String nome;
+	private String nomePais;
 	private String idMonitorado;
 	private String alcunha;
 	private String telefones;
@@ -28,6 +29,14 @@ public class MonitoradoDto extends ModelDto {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getNomePais() {
+		return nomePais;
+	}
+
+	public void setNomePais(String nomePais) {
+		this.nomePais = nomePais;
 	}
 
 	public String getIdMonitorado() {

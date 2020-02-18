@@ -1,16 +1,8 @@
 package br.com.maxgontijo.pmgo.planilhasveiculos.jsf;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-
+import br.com.maxgontijo.pmgo.planilhasveiculos.dto.MandatoDto;
+import br.com.maxgontijo.pmgo.planilhasveiculos.model.ArquivoCsv;
+import br.com.maxgontijo.pmgo.planilhasveiculos.service.ProcessarArquivoMandatosMonitoradosService;
 import br.com.maxgontijo.pmgo.planilhasveiculos.util.UtilZip;
 import org.primefaces.component.export.ExcelOptions;
 import org.primefaces.component.export.PDFOptions;
@@ -18,14 +10,25 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.maxgontijo.pmgo.planilhasveiculos.dto.MandatoDto;
-import br.com.maxgontijo.pmgo.planilhasveiculos.service.ProcessarArquivoMandatosMonitoradosService;
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 @ManagedBean
 @ViewScoped
 public class VerificarMonitoradosMandatosBean extends GenericJsfBean {
     private @Autowired
     ProcessarArquivoMandatosMonitoradosService processarArquivoMandatosMonitoradosService;
+
+    private ArquivoCsv arquivoMonitorados;
+    private ArquivoCsv arquivoMandatos;
 
     private List<MandatoDto> mandatos;
 
@@ -87,19 +90,8 @@ public class VerificarMonitoradosMandatosBean extends GenericJsfBean {
 
     public void processar() {
         try {
-            InputStream inMonitorados = fileMonitorados.getInputstream();
-            if (fileMonitorados.getFileName() != null && fileMonitorados.getFileName().trim().toLowerCase().endsWith(".zip")) {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                UtilZip.unzipOneSingleFile(inMonitorados, out);
-                inMonitorados = new ByteArrayInputStream(out.toByteArray());
-            }
-
-            InputStream inMandatos = fileMandatos.getInputstream();
-            if (fileMandatos.getFileName() != null && fileMandatos.getFileName().trim().toLowerCase().endsWith(".zip")) {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                UtilZip.unzipOneSingleFile(inMandatos, out);
-                inMandatos = new ByteArrayInputStream(out.toByteArray());
-            }
+            InputStream inMonitorados = extractInputStream(fileMonitorados);
+            InputStream inMandatos = extractInputStream(fileMandatos);
 
             mandatos = processarArquivoMandatosMonitoradosService.processarArquivo(inMonitorados, separadorMonitorados.charAt(0), inMandatos, separadorMandato.charAt(0));
 
@@ -118,6 +110,65 @@ public class VerificarMonitoradosMandatosBean extends GenericJsfBean {
         this.mandatos = null;
         this.fileMonitorados = null;
         this.fileMandatos = null;
+        this.arquivoMonitorados = null;
+        this.arquivoMandatos = null;
+    }
+
+    public void mostrarArquivoCsvMonitorados() {
+        if (arquivoMonitorados == null && fileMonitorados != null && separadorMonitorados != null) {
+            arquivoMonitorados = processarArquivoCsv(fileMonitorados, separadorMonitorados);
+        }
+    }
+
+    public void mostrarArquivoCsvMandatos() {
+        if (arquivoMandatos == null && fileMandatos != null && separadorMandato != null) {
+            arquivoMandatos = processarArquivoCsv(fileMandatos, separadorMandato);
+        }
+    }
+
+    private ArquivoCsv processarArquivoCsv(UploadedFile uf, String separador) {
+        try {
+            InputStream inMandatos = extractInputStream(uf);
+            ArquivoCsv arq = processarArquivoMandatosMonitoradosService.processarArquivoCsv(inMandatos, separador.charAt(0));
+            while (true) {
+                String[] tupla = arq.getTuplas().get(arq.getTuplas().size() - 1);
+                if (tupla.length == 1) {
+                    arq.getTuplas().remove(arq.getTuplas().size() - 1);
+                } else {
+                    boolean achouUma;
+                    achouUma = false;
+                    for (int i = 1; i < tupla.length; i++) {
+                        if (!tupla[i].trim().isEmpty()) {
+                            achouUma = true;
+                            break;
+                        }
+                    }
+                    if (!achouUma) {
+                        arq.getTuplas().remove(arq.getTuplas().size() - 1);
+                    } else {
+                        break;
+                    }
+                }
+            }
+            return arq;
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao processar arquivo.");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Detalhe do Erro", e.getMessage() != null ? e.getMessage() : e.toString());
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return null;
+        }
+    }
+
+    private InputStream extractInputStream(UploadedFile uf) throws IOException {
+        InputStream in = uf.getInputstream();
+        if (uf.getFileName() != null && uf.getFileName().trim().toLowerCase().endsWith(".zip")) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            UtilZip.unzipOneSingleFile(in, out);
+            in = new ByteArrayInputStream(out.toByteArray());
+        }
+        return in;
     }
 
     public UploadedFile getFileMonitorados() {
@@ -142,6 +193,14 @@ public class VerificarMonitoradosMandatosBean extends GenericJsfBean {
 
     public void setSeparadorMandato(String separadorMandato) {
         this.separadorMandato = separadorMandato;
+    }
+
+    public ArquivoCsv getArquivoMonitorados() {
+        return arquivoMonitorados;
+    }
+
+    public ArquivoCsv getArquivoMandatos() {
+        return arquivoMandatos;
     }
 
     public List<MandatoDto> getMandatos() {

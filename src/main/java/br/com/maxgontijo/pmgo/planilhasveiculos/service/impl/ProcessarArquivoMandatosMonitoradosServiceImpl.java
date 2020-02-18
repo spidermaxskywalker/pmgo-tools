@@ -2,10 +2,10 @@ package br.com.maxgontijo.pmgo.planilhasveiculos.service.impl;
 
 import br.com.maxgontijo.pmgo.planilhasveiculos.dto.MandatoDto;
 import br.com.maxgontijo.pmgo.planilhasveiculos.dto.MonitoradoDto;
+import br.com.maxgontijo.pmgo.planilhasveiculos.model.ArquivoCsv;
 import br.com.maxgontijo.pmgo.planilhasveiculos.service.ProcessarArquivoMandatosMonitoradosService;
 import br.com.maxgontijo.pmgo.planilhasveiculos.util.DadosInvalidosException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +20,29 @@ public class ProcessarArquivoMandatosMonitoradosServiceImpl implements Processar
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
-    @Transactional
+    public ArquivoCsv processarArquivoCsv(InputStream inMonitorados, char separadorMonitorados) {
+        try (BufferedReader bf = new BufferedReader(new InputStreamReader(inMonitorados))) {
+            ArquivoCsv monitorados = new ArquivoCsv();
+
+            String line = bf.readLine();
+            String[] nomesColunas = line.split(String.valueOf(separadorMonitorados), -1);
+
+            for (String c : nomesColunas) {
+                monitorados.getNomesColunas().add(c);
+            }
+
+            while ((line = bf.readLine()) != null) {
+                String[] tupla = line.split(String.valueOf(separadorMonitorados), -1);
+                monitorados.getTuplas().add(tupla);
+            }
+
+            return monitorados;
+        } catch (IOException e) {
+            throw new DadosInvalidosException("Problema ao ler arquivo de monitorados.");
+        }
+    }
+
+    @Override
     public List<MandatoDto> processarArquivo(InputStream inMonitorados, char separadorMonitorados, InputStream inMandatos, char separadorMandatos) {
         List<MonitoradoDto> monitorados = lerArquivoMonitorados(inMonitorados, separadorMonitorados);
         List<MandatoDto> mandatos = lerArquivoMandatos(monitorados, inMandatos, separadorMandatos);
@@ -90,6 +112,7 @@ public class ProcessarArquivoMandatosMonitoradosServiceImpl implements Processar
                 MonitoradoDto m = new MonitoradoDto();
                 m.setLinhaPlanilha(getLong(campos, 0));
                 m.setNome(getString(campos, 1, true));
+                m.setNomePais(getString(campos, 9));
 
                 if (m.getNome() == null || m.getNome().isEmpty()) {
                     continue;
