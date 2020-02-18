@@ -28,13 +28,13 @@
 							<h:outputText rendered="#{verificarMonitoradosMandatosBean.fileMonitorados != null}" value="#{verificarMonitoradosMandatosBean.fileMonitorados.fileName}" />
 						</h:column>
 					
-						<h:outputLabel value="Semarador CSV - Arquivo Monitorados:" />
+						<h:outputLabel value="Separador CSV - Arquivo Monitorados:" />
 						<p:selectOneMenu id="separadorMonitorados" disabled="#{verificarMonitoradosMandatosBean.fileMonitorados != null}" value="#{verificarMonitoradosMandatosBean.separadorMonitorados}">
 							<f:selectItem itemLabel=";" itemValue=";" />
 							<f:selectItem itemLabel="," itemValue="," />
 						</p:selectOneMenu>
 					
-						<h:outputLabel value="Arquivo Monitorados:" />
+						<h:outputLabel value="Arquivo Mandatos:" />
 						<h:column>
 							<p:fileUpload rendered="#{verificarMonitoradosMandatosBean.fileMandatos == null}"
 								fileUploadListener="#{verificarMonitoradosMandatosBean.handleFileUploadMandatos}"
@@ -44,7 +44,7 @@
 							<h:outputText rendered="#{verificarMonitoradosMandatosBean.fileMandatos != null}" value="#{verificarMonitoradosMandatosBean.fileMandatos.fileName}" />
 						</h:column>
 					
-						<h:outputLabel value="Semarador CSV - Arquivo Mandatos:" />
+						<h:outputLabel value="Separador CSV - Arquivo Mandatos:" />
 						<p:selectOneMenu id="separadorMandato" disabled="#{verificarMonitoradosMandatosBean.fileMandatos != null}" value="#{verificarMonitoradosMandatosBean.separadorMandato}">
 							<f:selectItem itemLabel=";" itemValue=";" />
 							<f:selectItem itemLabel="," itemValue="," />
@@ -104,11 +104,13 @@
 						<p:column headerText="Número Mandato" sortBy="#{reg.numero}">
 							<h:outputText value="#{reg.numero}"/>
 						</p:column>
-						<p:column headerText="ID Monitoramento" sortBy="#{reg.idMonitorado}">
+						<p:column headerText="ID Monitoramento" sortBy="#{reg.monitorado.idMonitorado}">
 							<h:outputText value="#{reg.monitorado.idMonitorado}"/>
 						</p:column>
-						<p:column headerText="Alcunha" sortBy="#{reg.monitorado.alcunha}">
-							<h:outputText value="#{reg.monitorado.alcunha}"/>
+						<p:column headerText="Data Expedição MP" sortBy="#{reg.dataExpedicao}">
+							<h:outputText value="#{reg.dataExpedicao}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
 						</p:column>
 						<p:column headerText="Cidade" sortBy="#{reg.monitorado.cidade}">
 							<h:outputText value="#{reg.monitorado.cidade}"/>
