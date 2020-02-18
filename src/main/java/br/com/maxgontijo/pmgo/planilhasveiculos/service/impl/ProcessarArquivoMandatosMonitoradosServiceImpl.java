@@ -52,6 +52,7 @@ public class ProcessarArquivoMandatosMonitoradosServiceImpl implements Processar
                         MandatoDto mandato = new MandatoDto();
                         mandato.setNumero(getString(campos, 0));
                         mandato.setDataExpedicao(getDate(campos, 7));
+                        mandato.setNomeMae(getString(campos, 3, true));
                         mandato.setMonitorado(m);
                         mandatos.add(mandato);
                     }

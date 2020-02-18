@@ -68,6 +68,9 @@
 							<tr>
 								<th colspan="5">
 									<div style="text-align: right;">
+										<p:commandButton id="toggler" type="button" value="Colunas" style="float:right;" icon="fas fa-eye" />
+										<p:columnToggler datasource="tblMandatos" trigger="toggler" />
+
 										<span>Exportar para:</span>
 									    
 									    <h:commandLink style="text-decoration: none;" title="Documento PDF">
@@ -75,7 +78,7 @@
 												<i class="far fa-circle fa-stack-2x"></i>
 												<i class="fas fa-file-pdf fa-stack-1x"></i>
 											</span>
-									        <p:dataExporter type="pdf" target="tblMandatos" fileName="mandatos" options="#{verificarMonitoradosMandatosBean.pdfOpt}"/>
+									        <p:dataExporter type="pdf" target="tblMandatos" fileName="mandatos" options="#{verificarMonitoradosMandatosBean.pdfOpt}" />
 									    </h:commandLink>
 									    
 									    <h:commandLink style="text-decoration: none;" title="Planilha XLSX">
@@ -100,6 +103,9 @@
 					
 						<p:column headerText="Nome da pessoa" sortBy="#{reg.monitorado.nome}">
 							<h:outputText value="#{reg.monitorado.nome}"/>
+						</p:column>
+						<p:column headerText="Nome da mãe" sortBy="#{reg.nomeMae}">
+							<h:outputText value="#{reg.nomeMae}"/>
 						</p:column>
 						<p:column headerText="Número Mandato" sortBy="#{reg.numero}">
 							<h:outputText value="#{reg.numero}"/>

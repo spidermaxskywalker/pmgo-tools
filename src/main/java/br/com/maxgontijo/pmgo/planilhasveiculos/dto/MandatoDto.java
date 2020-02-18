@@ -5,6 +5,7 @@ import java.util.Date;
 public class MandatoDto extends ModelDto {
     private String numero;
     private Date dataExpedicao;
+    private String nomeMae;
     private MonitoradoDto monitorado;
 
     public String getNumero() {
@@ -21,6 +22,14 @@ public class MandatoDto extends ModelDto {
 
     public void setDataExpedicao(Date dataExpedicao) {
         this.dataExpedicao = dataExpedicao;
+    }
+
+    public String getNomeMae() {
+        return nomeMae;
+    }
+
+    public void setNomeMae(String nomeMae) {
+        this.nomeMae = nomeMae;
     }
 
     public MonitoradoDto getMonitorado() {

@@ -1,7 +1,28 @@
-/* Max Gontijo de Oliveira */
+/* Primefaces */
 .ui-icon {
 	text-indent: 0px !important;
 }
+
+.ui-datatable,
+.ui-datatable .ui-datatable-tablewrapper table {
+	font-size: 14px !important;
+}
+
+/* For Paginator */
+.ui-datatable .ui-paginator .ui-paginator-first,
+.ui-datatable .ui-paginator .ui-paginator-prev,
+.ui-datatable .ui-paginator .ui-paginator-pages .ui-paginator-page,
+.ui-datatable .ui-paginator .ui-paginator-next,
+.ui-datatable .ui-paginator .ui-paginator-last,
+.ui-datatable .ui-paginator .ui-paginator-rpp-options {
+	font-size: 12px !important;
+}
+
+.ui-datatable .ui-paginator .ui-paginator-current {
+	font-size: 12px !important;
+}
+
+/* Max Gontijo de Oliveira */
 
 .home-title {
 	font-size: 60px;
@@ -28,3 +49,4 @@
 	margin-right: 5px;
 	float: left;
 }
+
