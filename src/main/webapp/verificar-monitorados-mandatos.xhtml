@@ -23,7 +23,7 @@
 							<p:fileUpload rendered="#{verificarMonitoradosMandatosBean.fileMonitorados == null}"
 								fileUploadListener="#{verificarMonitoradosMandatosBean.handleFileUploadMonitorados}"
 								mode="advanced" auto="true" dragDropSupport="false" multiple="false" 
-								allowTypes="/(\.|\/)(csv)$/" update=":content"
+								allowTypes="/(\.|\/)(csv|zip)$/" update=":content"
 								label="Arquivo Monitorados - CSV" />
 							<h:outputText rendered="#{verificarMonitoradosMandatosBean.fileMonitorados != null}" value="#{verificarMonitoradosMandatosBean.fileMonitorados.fileName}" />
 						</h:column>
@@ -39,7 +39,7 @@
 							<p:fileUpload rendered="#{verificarMonitoradosMandatosBean.fileMandatos == null}"
 								fileUploadListener="#{verificarMonitoradosMandatosBean.handleFileUploadMandatos}"
 								mode="advanced" auto="true" dragDropSupport="false" multiple="false" 
-								allowTypes="/(\.|\/)(csv)$/" update=":content"
+								allowTypes="/(\.|\/)(csv|zip)$/" update=":content"
 								label="Arquivo Mandatos - CSV" />
 							<h:outputText rendered="#{verificarMonitoradosMandatosBean.fileMandatos != null}" value="#{verificarMonitoradosMandatosBean.fileMandatos.fileName}" />
 						</h:column>
