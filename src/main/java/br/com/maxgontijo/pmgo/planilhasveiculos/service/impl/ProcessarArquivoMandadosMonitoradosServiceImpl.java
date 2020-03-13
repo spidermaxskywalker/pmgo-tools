@@ -1,27 +1,27 @@
 package br.com.maxgontijo.pmgo.planilhasveiculos.service.impl;
 
-import br.com.maxgontijo.pmgo.planilhasveiculos.dto.MandatoDto;
+import br.com.maxgontijo.pmgo.planilhasveiculos.dto.MandadoDto;
 import br.com.maxgontijo.pmgo.planilhasveiculos.dto.MonitoradoDto;
 import br.com.maxgontijo.pmgo.planilhasveiculos.model.ArquivoCsv;
-import br.com.maxgontijo.pmgo.planilhasveiculos.service.ProcessarArquivoMandatosMonitoradosService;
+import br.com.maxgontijo.pmgo.planilhasveiculos.service.ProcessarArquivoMandadosMonitoradosService;
+import br.com.maxgontijo.pmgo.planilhasveiculos.util.CharsetDetector;
 import br.com.maxgontijo.pmgo.planilhasveiculos.util.DadosInvalidosException;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Service("processarArquivoMandatosMonitoradosService")
-public class ProcessarArquivoMandatosMonitoradosServiceImpl implements ProcessarArquivoMandatosMonitoradosService {
+@Service("processarArquivoMandadosMonitoradosService")
+public class ProcessarArquivoMandadosMonitoradosServiceImpl implements ProcessarArquivoMandadosMonitoradosService {
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
     public ArquivoCsv processarArquivoCsv(InputStream inMonitorados, char separadorMonitorados) {
-        try (BufferedReader bf = new BufferedReader(new InputStreamReader(inMonitorados))) {
+        try (BufferedReader bf = new BufferedReader(CharsetDetector.createTextInputStreamReader(inMonitorados))) {
             ArquivoCsv monitorados = new ArquivoCsv();
 
             String line = bf.readLine();
@@ -43,13 +43,13 @@ public class ProcessarArquivoMandatosMonitoradosServiceImpl implements Processar
     }
 
     @Override
-    public List<MandatoDto> processarArquivo(InputStream inMonitorados, char separadorMonitorados, InputStream inMandatos, char separadorMandatos) {
+    public List<MandadoDto> processarArquivo(InputStream inMonitorados, char separadorMonitorados, InputStream inMandados, char separadorMandados) {
         List<MonitoradoDto> monitorados = lerArquivoMonitorados(inMonitorados, separadorMonitorados);
-        List<MandatoDto> mandatos = lerArquivoMandatos(monitorados, inMandatos, separadorMandatos);
-        return mandatos;
+        List<MandadoDto> mandados = lerArquivoMandados(monitorados, inMandados, separadorMandados);
+        return mandados;
     }
 
-    private List<MandatoDto> lerArquivoMandatos(List<MonitoradoDto> monitorados, InputStream inMandatos, char separadorMandatos) {
+    private List<MandadoDto> lerArquivoMandados(List<MonitoradoDto> monitorados, InputStream inMandados, char separadorMandados) {
         Map<String, List<MonitoradoDto>> monitoradosMap = new TreeMap<>();
         for (MonitoradoDto m : monitorados) {
             List<MonitoradoDto> regs = monitoradosMap.get(m.getNome());
@@ -60,28 +60,28 @@ public class ProcessarArquivoMandatosMonitoradosServiceImpl implements Processar
             regs.add(m);
         }
 
-        try (BufferedReader bf = new BufferedReader(new InputStreamReader(inMandatos))) {
+        try (BufferedReader bf = new BufferedReader(CharsetDetector.createTextInputStreamReader(inMandados))) {
             String line;
-            List<MandatoDto> mandatos = new ArrayList<>();
+            List<MandadoDto> mandados = new ArrayList<>();
             bf.readLine();
             while ((line = bf.readLine()) != null) {
-                String[] campos = line.split(String.valueOf(separadorMandatos), -1);
+                String[] campos = line.split(String.valueOf(separadorMandados), -1);
 
                 List<MonitoradoDto> regs = monitoradosMap.get(getString(campos, 1));
 
                 if (regs != null) {
                     for (MonitoradoDto m : regs) {
-                        MandatoDto mandato = new MandatoDto();
-                        mandato.setNumero(getString(campos, 0));
-                        mandato.setDataExpedicao(getDate(campos, 7));
-                        mandato.setNomeMae(getString(campos, 3, true));
-                        mandato.setMonitorado(m);
-                        mandatos.add(mandato);
+                        MandadoDto mandado = new MandadoDto();
+                        mandado.setNumero(getString(campos, 0));
+                        mandado.setDataExpedicao(getDate(campos, 7));
+                        mandado.setNomeMae(getString(campos, 3, true));
+                        mandado.setMonitorado(m);
+                        mandados.add(mandado);
                     }
                 }
             }
 
-            mandatos.sort((m1, m2) -> {
+            mandados.sort((m1, m2) -> {
                 int c = m1.getMonitorado().getNome().compareTo(m2.getMonitorado().getNome());
                 if (c == 0) {
                     c = m1.getNumero().compareTo(m2.getNumero());
@@ -95,14 +95,14 @@ public class ProcessarArquivoMandatosMonitoradosServiceImpl implements Processar
                 return c;
             });
 
-            return mandatos;
+            return mandados;
         } catch (IOException e) {
             throw new DadosInvalidosException("Problema ao ler arquivo de monitorados.");
         }
     }
 
     private List<MonitoradoDto> lerArquivoMonitorados(InputStream inMonitorados, char separadorMonitorados) {
-        try (BufferedReader bf = new BufferedReader(new InputStreamReader(inMonitorados))) {
+        try (BufferedReader bf = new BufferedReader(CharsetDetector.createTextInputStreamReader(inMonitorados))) {
             String line;
             List<MonitoradoDto> monitorados = new ArrayList<>();
             bf.readLine();

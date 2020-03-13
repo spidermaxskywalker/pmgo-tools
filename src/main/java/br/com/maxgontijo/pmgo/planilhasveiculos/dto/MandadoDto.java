@@ -2,7 +2,7 @@ package br.com.maxgontijo.pmgo.planilhasveiculos.dto;
 
 import java.util.Date;
 
-public class MandatoDto extends ModelDto {
+public class MandadoDto extends ModelDto {
     private String numero;
     private Date dataExpedicao;
     private String nomeMae;

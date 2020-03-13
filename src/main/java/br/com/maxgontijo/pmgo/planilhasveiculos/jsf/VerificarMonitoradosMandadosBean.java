@@ -1,8 +1,8 @@
 package br.com.maxgontijo.pmgo.planilhasveiculos.jsf;
 
-import br.com.maxgontijo.pmgo.planilhasveiculos.dto.MandatoDto;
+import br.com.maxgontijo.pmgo.planilhasveiculos.dto.MandadoDto;
 import br.com.maxgontijo.pmgo.planilhasveiculos.model.ArquivoCsv;
-import br.com.maxgontijo.pmgo.planilhasveiculos.service.ProcessarArquivoMandatosMonitoradosService;
+import br.com.maxgontijo.pmgo.planilhasveiculos.service.ProcessarArquivoMandadosMonitoradosService;
 import br.com.maxgontijo.pmgo.planilhasveiculos.util.UtilZip;
 import org.primefaces.component.export.ExcelOptions;
 import org.primefaces.component.export.PDFOptions;
@@ -23,20 +23,20 @@ import java.util.List;
 
 @ManagedBean
 @ViewScoped
-public class VerificarMonitoradosMandatosBean extends GenericJsfBean {
+public class VerificarMonitoradosMandadosBean extends GenericJsfBean {
     private @Autowired
-    ProcessarArquivoMandatosMonitoradosService processarArquivoMandatosMonitoradosService;
+    ProcessarArquivoMandadosMonitoradosService processarArquivoMandadosMonitoradosService;
 
     private ArquivoCsv arquivoMonitorados;
-    private ArquivoCsv arquivoMandatos;
+    private ArquivoCsv arquivoMandados;
 
-    private List<MandatoDto> mandatos;
+    private List<MandadoDto> mandados;
 
     private UploadedFile fileMonitorados;
-    private UploadedFile fileMandatos;
+    private UploadedFile fileMandados;
 
     private String separadorMonitorados = ";";
-    private String separadorMandato = ",";
+    private String separadorMandado = ",";
 
     private ExcelOptions excelOpt;
     private PDFOptions pdfOpt;
@@ -74,9 +74,9 @@ public class VerificarMonitoradosMandatosBean extends GenericJsfBean {
         }
     }
 
-    public void handleFileUploadMandatos(FileUploadEvent event) {
+    public void handleFileUploadMandados(FileUploadEvent event) {
         try {
-            this.fileMandatos = event.getFile();
+            this.fileMandados = event.getFile();
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", event.getFile().getFileName() + " foi enviado.");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } catch (Exception e) {
@@ -91,9 +91,9 @@ public class VerificarMonitoradosMandatosBean extends GenericJsfBean {
     public void processar() {
         try {
             InputStream inMonitorados = extractInputStream(fileMonitorados);
-            InputStream inMandatos = extractInputStream(fileMandatos);
+            InputStream inMandados = extractInputStream(fileMandados);
 
-            mandatos = processarArquivoMandatosMonitoradosService.processarArquivo(inMonitorados, separadorMonitorados.charAt(0), inMandatos, separadorMandato.charAt(0));
+            mandados = processarArquivoMandadosMonitoradosService.processarArquivo(inMonitorados, separadorMonitorados.charAt(0), inMandados, separadorMandado.charAt(0));
 
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Arquivos foram processados.");
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -107,11 +107,11 @@ public class VerificarMonitoradosMandatosBean extends GenericJsfBean {
     }
 
     public void limpar() {
-        this.mandatos = null;
+        this.mandados = null;
         this.fileMonitorados = null;
-        this.fileMandatos = null;
+        this.fileMandados = null;
         this.arquivoMonitorados = null;
-        this.arquivoMandatos = null;
+        this.arquivoMandados = null;
     }
 
     public void mostrarArquivoCsvMonitorados() {
@@ -120,16 +120,16 @@ public class VerificarMonitoradosMandatosBean extends GenericJsfBean {
         }
     }
 
-    public void mostrarArquivoCsvMandatos() {
-        if (arquivoMandatos == null && fileMandatos != null && separadorMandato != null) {
-            arquivoMandatos = processarArquivoCsv(fileMandatos, separadorMandato);
+    public void mostrarArquivoCsvMandados() {
+        if (arquivoMandados == null && fileMandados != null && separadorMandado != null) {
+            arquivoMandados = processarArquivoCsv(fileMandados, separadorMandado);
         }
     }
 
     private ArquivoCsv processarArquivoCsv(UploadedFile uf, String separador) {
         try {
-            InputStream inMandatos = extractInputStream(uf);
-            ArquivoCsv arq = processarArquivoMandatosMonitoradosService.processarArquivoCsv(inMandatos, separador.charAt(0));
+            InputStream inMandados = extractInputStream(uf);
+            ArquivoCsv arq = processarArquivoMandadosMonitoradosService.processarArquivoCsv(inMandados, separador.charAt(0));
             while (true) {
                 String[] tupla = arq.getTuplas().get(arq.getTuplas().size() - 1);
                 if (tupla.length == 1) {
@@ -175,8 +175,8 @@ public class VerificarMonitoradosMandatosBean extends GenericJsfBean {
         return fileMonitorados;
     }
 
-    public UploadedFile getFileMandatos() {
-        return fileMandatos;
+    public UploadedFile getFileMandados() {
+        return fileMandados;
     }
 
     public String getSeparadorMonitorados() {
@@ -187,24 +187,24 @@ public class VerificarMonitoradosMandatosBean extends GenericJsfBean {
         this.separadorMonitorados = separadorMonitorados;
     }
 
-    public String getSeparadorMandato() {
-        return separadorMandato;
+    public String getSeparadorMandado() {
+        return separadorMandado;
     }
 
-    public void setSeparadorMandato(String separadorMandato) {
-        this.separadorMandato = separadorMandato;
+    public void setSeparadorMandado(String separadorMandado) {
+        this.separadorMandado = separadorMandado;
     }
 
     public ArquivoCsv getArquivoMonitorados() {
         return arquivoMonitorados;
     }
 
-    public ArquivoCsv getArquivoMandatos() {
-        return arquivoMandatos;
+    public ArquivoCsv getArquivoMandados() {
+        return arquivoMandados;
     }
 
-    public List<MandatoDto> getMandatos() {
-        return mandatos;
+    public List<MandadoDto> getMandados() {
+        return mandados;
     }
 
     public PDFOptions getPdfOpt() {

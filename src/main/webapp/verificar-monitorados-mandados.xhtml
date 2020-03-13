@@ -7,12 +7,12 @@
 	<h:head>
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-		<title>Mandatos de Monitorados [#{helloWorldBean.hello}]</title>
+		<title>Mandados de Monitorados [#{helloWorldBean.hello}]</title>
 	</h:head>
 	<h:body>
 		<ui:include src="menu.xhtml"></ui:include>
 			
-		<p:panel id="content" header="Mandatos de Monitorados" >
+		<p:panel id="content" header="Mandados de Monitorados" >
 			<h:panelGroup>
 				<h:form enctype="multipart/form-data">
 					<p:messages autoUpdate="true" showDetail="true" />
@@ -20,58 +20,58 @@
 					<h:panelGrid columns="2">
 						<h:outputLabel value="Arquivo Monitorados:" />
 						<h:column>
-							<p:fileUpload rendered="#{verificarMonitoradosMandatosBean.fileMonitorados == null}"
-								fileUploadListener="#{verificarMonitoradosMandatosBean.handleFileUploadMonitorados}"
+							<p:fileUpload rendered="#{verificarMonitoradosMandadosBean.fileMonitorados == null}"
+								fileUploadListener="#{verificarMonitoradosMandadosBean.handleFileUploadMonitorados}"
 								mode="advanced" auto="true" dragDropSupport="false" multiple="false" 
 								allowTypes="/(\.|\/)(csv|zip)$/" update=":content"
 								label="Arquivo Monitorados - CSV" />
-								<h:outputText rendered="#{verificarMonitoradosMandatosBean.fileMonitorados != null}" value="#{verificarMonitoradosMandatosBean.fileMonitorados.fileName}" />
-								<p:commandButton rendered="#{verificarMonitoradosMandatosBean.fileMonitorados != null}" style="margin-left: 10px;" value="Mostrar dados" onsuccess="PF('popupMonitorados').show();" actionListener="#{verificarMonitoradosMandatosBean.mostrarArquivoCsvMonitorados}" update=":tblCsvMonitorados" />
+								<h:outputText rendered="#{verificarMonitoradosMandadosBean.fileMonitorados != null}" value="#{verificarMonitoradosMandadosBean.fileMonitorados.fileName}" />
+								<p:commandButton rendered="#{verificarMonitoradosMandadosBean.fileMonitorados != null}" style="margin-left: 10px;" value="Mostrar dados" onsuccess="PF('popupMonitorados').show();" actionListener="#{verificarMonitoradosMandadosBean.mostrarArquivoCsvMonitorados}" update=":tblCsvMonitorados" />
 						</h:column>
 					
 						<h:outputLabel value="Separador CSV - Arquivo Monitorados:" />
-						<p:selectOneMenu id="separadorMonitorados" disabled="#{verificarMonitoradosMandatosBean.fileMonitorados != null}" value="#{verificarMonitoradosMandatosBean.separadorMonitorados}">
+						<p:selectOneMenu id="separadorMonitorados" disabled="#{verificarMonitoradosMandadosBean.fileMonitorados != null}" value="#{verificarMonitoradosMandadosBean.separadorMonitorados}">
 							<f:selectItem itemLabel=";" itemValue=";" />
 							<f:selectItem itemLabel="," itemValue="," />
 						</p:selectOneMenu>
 					
-						<h:outputLabel value="Arquivo Mandatos:" />
+						<h:outputLabel value="Arquivo Mandados:" />
 						<h:column>
-							<p:fileUpload rendered="#{verificarMonitoradosMandatosBean.fileMandatos == null}"
-								fileUploadListener="#{verificarMonitoradosMandatosBean.handleFileUploadMandatos}"
+							<p:fileUpload rendered="#{verificarMonitoradosMandadosBean.fileMandados == null}"
+								fileUploadListener="#{verificarMonitoradosMandadosBean.handleFileUploadMandados}"
 								mode="advanced" auto="true" dragDropSupport="false" multiple="false" 
 								allowTypes="/(\.|\/)(csv|zip)$/" update=":content"
-								label="Arquivo Mandatos - CSV" />
-							<h:outputText rendered="#{verificarMonitoradosMandatosBean.fileMandatos != null}" value="#{verificarMonitoradosMandatosBean.fileMandatos.fileName}" />
-							<p:commandButton rendered="#{verificarMonitoradosMandatosBean.fileMandatos != null}" style="margin-left: 10px;" value="Mostrar dados" onsuccess="PF('popupMandatos').show();" actionListener="#{verificarMonitoradosMandatosBean.mostrarArquivoCsvMandatos}" update=":tblCsvMandatos" />
+								label="Arquivo Mandados - CSV" />
+							<h:outputText rendered="#{verificarMonitoradosMandadosBean.fileMandados != null}" value="#{verificarMonitoradosMandadosBean.fileMandados.fileName}" />
+							<p:commandButton rendered="#{verificarMonitoradosMandadosBean.fileMandados != null}" style="margin-left: 10px;" value="Mostrar dados" onsuccess="PF('popupMandados').show();" actionListener="#{verificarMonitoradosMandadosBean.mostrarArquivoCsvMandados}" update=":tblCsvMandados" />
 						</h:column>
 					
-						<h:outputLabel value="Separador CSV - Arquivo Mandatos:" />
-						<p:selectOneMenu id="separadorMandato" disabled="#{verificarMonitoradosMandatosBean.fileMandatos != null}" value="#{verificarMonitoradosMandatosBean.separadorMandato}">
+						<h:outputLabel value="Separador CSV - Arquivo Mandados:" />
+						<p:selectOneMenu id="separadorMandado" disabled="#{verificarMonitoradosMandadosBean.fileMandados != null}" value="#{verificarMonitoradosMandadosBean.separadorMandado}">
 							<f:selectItem itemLabel=";" itemValue=";" />
 							<f:selectItem itemLabel="," itemValue="," />
 						</p:selectOneMenu>
 					</h:panelGrid>
 					
-					<p:commandButton disabled="#{verificarMonitoradosMandatosBean.separadorMonitorados == null || verificarMonitoradosMandatosBean.separadorMandato == null || verificarMonitoradosMandatosBean.mandatos != null}" value="Processar" actionListener="#{verificarMonitoradosMandatosBean.processar}" process="@this,separadorMonitorados,separadorMandato" update=":content" />
-					<p:commandButton value="Limpar" icon="fas fa-trash" actionListener="#{verificarMonitoradosMandatosBean.limpar}" update=":content"/>
+					<p:commandButton disabled="#{verificarMonitoradosMandadosBean.separadorMonitorados == null || verificarMonitoradosMandadosBean.separadorMandado == null || verificarMonitoradosMandadosBean.mandados != null}" value="Processar" actionListener="#{verificarMonitoradosMandadosBean.processar}" process="@this,separadorMonitorados,separadorMandado" update=":content" />
+					<p:commandButton value="Limpar" icon="fas fa-trash" actionListener="#{verificarMonitoradosMandadosBean.limpar}" update=":content"/>
 				</h:form>
 			</h:panelGroup>
 			
-			<h:panelGroup rendered="#{verificarMonitoradosMandatosBean.mandatos != null}">
+			<h:panelGroup rendered="#{verificarMonitoradosMandadosBean.mandados != null}">
 				<h:form>
 					<h:panelGrid columns="2">
-						<h:outputLabel value="Quantidade de mandatos retornados: " />
-						<h:outputText value="#{verificarMonitoradosMandatosBean.mandatos.size()}" />
+						<h:outputLabel value="Quantidade de mandados retornados: " />
+						<h:outputText value="#{verificarMonitoradosMandadosBean.mandados.size()}" />
 					</h:panelGrid>
 					
-					<p:dataTable id="tblMandatos" value="#{verificarMonitoradosMandatosBean.mandatos}" var="reg" stickyHeader="true">
+					<p:dataTable id="tblMandados" value="#{verificarMonitoradosMandadosBean.mandados}" var="reg" stickyHeader="true">
 						<f:facet name="header">
 							<tr>
 								<th colspan="5">
 									<div style="text-align: right;">
 										<p:commandButton rendered="false" id="toggler" type="button" value="Colunas" style="float:right;" icon="fas fa-eye" />
-										<p:columnToggler rendered="false" datasource="tblMandatos" trigger="toggler" />
+										<p:columnToggler rendered="false" datasource="tblMandados" trigger="toggler" />
 
 										<span>Exportar para:</span>
 									    
@@ -80,7 +80,7 @@
 												<i class="far fa-circle fa-stack-2x"></i>
 												<i class="fas fa-file-pdf fa-stack-1x"></i>
 											</span>
-									        <p:dataExporter type="pdf" target="tblMandatos" fileName="mandatos" options="#{verificarMonitoradosMandatosBean.pdfOpt}" />
+									        <p:dataExporter type="pdf" target="tblMandados" fileName="mandados" options="#{verificarMonitoradosMandadosBean.pdfOpt}" />
 									    </h:commandLink>
 									    
 									    <h:commandLink style="text-decoration: none;" title="Planilha XLSX">
@@ -88,7 +88,7 @@
 												<i class="far fa-circle fa-stack-2x"></i>
 												<i class="fas fa-file-excel fa-stack-1x"></i>
 											</span>
-									        <p:dataExporter type="xlsxstream" target="tblMandatos" fileName="mandatos" options="#{verificarMonitoradosMandatosBean.excelOpt}"/>
+									        <p:dataExporter type="xlsxstream" target="tblMandados" fileName="mandados" options="#{verificarMonitoradosMandadosBean.excelOpt}"/>
 									    </h:commandLink>
 									 
 									    <h:commandLink style="text-decoration: none;" title="Arquivo CSV">
@@ -96,7 +96,7 @@
 												<i class="far fa-circle fa-stack-2x"></i>
 												<i class="fas fa-file-csv fa-stack-1x"></i>
 											</span>
-									        <p:dataExporter type="csv" target="tblMandatos" fileName="mandatos" />
+									        <p:dataExporter type="csv" target="tblMandados" fileName="mandados" />
 									    </h:commandLink>
 						            </div>
 					            </th>
@@ -107,13 +107,13 @@
 							<p:row>
 								<p:column rowspan="2" headerText="Nome da pessoa" sortBy="#{reg.monitorado.nome}"/>
 								<p:column colspan="3" headerText="Dados vindos do arquivo de Monitorados" />
-								<p:column colspan="3" headerText="Dados vindos do arquivo de Mandatos" />
+								<p:column colspan="3" headerText="Dados vindos do arquivo de Mandados" />
 							</p:row>
 							<p:row>
 								<p:column headerText="Nome dos pais" sortBy="#{reg.monitorado.nomePais}"/>
 								<p:column headerText="ID Monitoramento" sortBy="#{reg.monitorado.idMonitorado}"/>
 								<p:column headerText="Cidade" sortBy="#{reg.monitorado.cidade}"/>
-								<p:column headerText="Número Mandato" sortBy="#{reg.numero}"/>
+								<p:column headerText="Número Mandado" sortBy="#{reg.numero}"/>
 								<p:column headerText="Nome da mãe" sortBy="#{reg.nomeMae}"/>
 								<p:column headerText="Data Expedição MP" sortBy="#{reg.dataExpedicao}"/>
 							</p:row>
@@ -131,7 +131,7 @@
 						<p:column headerText="Cidade" sortBy="#{reg.monitorado.cidade}">
 							<h:outputText value="#{reg.monitorado.cidade}"/>
 						</p:column>
-						<p:column headerText="Número Mandato" sortBy="#{reg.numero}">
+						<p:column headerText="Número Mandado" sortBy="#{reg.numero}">
 							<h:outputText value="#{reg.numero}"/>
 						</p:column>
 						<p:column headerText="Nome da mãe" sortBy="#{reg.nomeMae}">
@@ -148,10 +148,10 @@
 		</p:panel>
 
 		<p:dialog widgetVar="popupMonitorados" header="Monitorados - Registros do arquivo CSV" width="1000px" maximizable="true" modal="true" closeOnEscape="true" draggable="false" >
-			<p:dataTable id="tblCsvMonitorados" value="#{verificarMonitoradosMandatosBean.arquivoMonitorados.tuplas}" var="reg" paginator="true" rows="10">
+			<p:dataTable id="tblCsvMonitorados" value="#{verificarMonitoradosMandadosBean.arquivoMonitorados.tuplas}" var="reg" paginator="true" rows="10">
 				<f:facet name="header">
 					<tr>
-						<th colspan="#{verificarMonitoradosMandatosBean.arquivoMonitorados.nomesColunas.size()}">
+						<th colspan="#{verificarMonitoradosMandadosBean.arquivoMonitorados.nomesColunas.size()}">
 							<div style="text-align: right;">
 								<p:commandButton id="togglerArqCsvMonitorados" type="button" value="Colunas" icon="fas fa-eye" />
 								<p:columnToggler datasource="tblCsvMonitorados" trigger="togglerArqCsvMonitorados" />
@@ -160,7 +160,7 @@
 					</tr>
 				</f:facet>
 
-				<p:columns value="#{verificarMonitoradosMandatosBean.arquivoMonitorados.nomesColunas}" var="col" columnIndexVar="colIndex" sortBy="#{reg[colIndex]}" visible="#{colIndex le 3}">
+				<p:columns value="#{verificarMonitoradosMandadosBean.arquivoMonitorados.nomesColunas}" var="col" columnIndexVar="colIndex" sortBy="#{reg[colIndex]}" visible="#{colIndex le 3}">
 					<f:facet name="header">
 						<h:outputText value="#{col}" />
 					</f:facet>
@@ -169,20 +169,20 @@
 			</p:dataTable>
 		</p:dialog>
 
-		<p:dialog widgetVar="popupMandatos" header="Mandatos - Registros do arquivo CSV" width="1000px" maximizable="true" modal="true" closeOnEscape="true" draggable="false" >
-			<p:dataTable id="tblCsvMandatos" value="#{verificarMonitoradosMandatosBean.arquivoMandatos.tuplas}" var="reg" paginator="true" rows="10">
+		<p:dialog widgetVar="popupMandados" header="Mandados - Registros do arquivo CSV" width="1000px" maximizable="true" modal="true" closeOnEscape="true" draggable="false" >
+			<p:dataTable id="tblCsvMandados" value="#{verificarMonitoradosMandadosBean.arquivoMandados.tuplas}" var="reg" paginator="true" rows="10">
 				<f:facet name="header">
 					<tr>
-						<th colspan="#{verificarMonitoradosMandatosBean.arquivoMandatos.nomesColunas.size()}">
+						<th colspan="#{verificarMonitoradosMandadosBean.arquivoMandados.nomesColunas.size()}">
 							<div style="text-align: right;">
-								<p:commandButton id="togglerArqCsvMandatos" type="button" value="Colunas" icon="fas fa-eye" />
-								<p:columnToggler datasource="tblCsvMandatos" trigger="togglerArqCsvMandatos" />
+								<p:commandButton id="togglerArqCsvMandados" type="button" value="Colunas" icon="fas fa-eye" />
+								<p:columnToggler datasource="tblCsvMandados" trigger="togglerArqCsvMandados" />
 							</div>
 						</th>
 					</tr>
 				</f:facet>
 
-				<p:columns value="#{verificarMonitoradosMandatosBean.arquivoMandatos.nomesColunas}" var="col" columnIndexVar="colIndex" sortBy="#{reg[colIndex]}" visible="#{colIndex le 3}">
+				<p:columns value="#{verificarMonitoradosMandadosBean.arquivoMandados.nomesColunas}" var="col" columnIndexVar="colIndex" sortBy="#{reg[colIndex]}" visible="#{colIndex le 3}">
 					<f:facet name="header">
 						<h:outputText value="#{col}" />
 					</f:facet>
