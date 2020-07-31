@@ -5,7 +5,7 @@
 
 .ui-datatable,
 .ui-datatable .ui-datatable-tablewrapper table {
-	font-size: 14px !important;
+	font-size: 12px !important;
 }
 
 /* For Paginator */
@@ -15,11 +15,11 @@
 .ui-datatable .ui-paginator .ui-paginator-next,
 .ui-datatable .ui-paginator .ui-paginator-last,
 .ui-datatable .ui-paginator .ui-paginator-rpp-options {
-	font-size: 12px !important;
+	font-size: 10px !important;
 }
 
 .ui-datatable .ui-paginator .ui-paginator-current {
-	font-size: 12px !important;
+	font-size: 10px !important;
 }
 
 /* Max Gontijo de Oliveira */

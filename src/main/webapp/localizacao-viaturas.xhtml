@@ -12,46 +12,94 @@
 	<h:body>
 		<ui:include src="menu.xhtml"></ui:include>
 			
-		<p:panel id="content" header="Recorrências" >
-			<h:panelGroup rendered="#{verificarRecorrenciaBean.recorrencias == null}">
+		<p:panel id="content" header="Localização de Viaturas" >
+			<h:panelGroup rendered="#{obterEnderecosDeCoordenadasBean.viaturas == null}">
 				<h:form enctype="multipart/form-data">
 					<p:messages autoUpdate="true" showDetail="true" />
+
 					<p:fileUpload
-						fileUploadListener="#{verificarRecorrenciaBean.handleFileUpload}"
+						fileUploadListener="#{obterEnderecosDeCoordenadasBean.handleFileUpload}"
 						mode="advanced" auto="true" dragDropSupport="false" multiple="false" 
 						sizeLimit="100000" allowTypes="/(\.|\/)(xlsx|xltx)$/" update=":content"
-						label="Escolha um arquivo XLS" />
+						label="Escolha um arquivo XLSX" onstart="loadingStart()" oncomplete="loadingStop()" />
 				</h:form>
 			</h:panelGroup>
-			
-			<h:panelGroup rendered="#{verificarRecorrenciaBean.recorrencias != null}">
-				<h:panelGrid id="infoRecorrencias" columns="2">
-					<h:outputLabel value="Quantidade de listas no arquivo: " />
-					<h:outputText value="#{verificarRecorrenciaBean.listas.size()}" />
-					
-					<h:outputLabel value="Quantidade de registros em cada lista: " />
-					<h:column>
-						<ui:repeat var="l" value="#{verificarRecorrenciaBean.listas}" varStatus="status">
-							<span class="item-lista-linha-qtde" title="Na lista #{status.index + 1} foram encontrados #{l} registros.">##{status.index + 1} <i class="fas fa-arrow-right"/> #{l}</span>
-						</ui:repeat>
-					</h:column>
-					<p:commandButton value="Limpar" icon="fas fa-trash" actionListener="#{verificarRecorrenciaBean.limpar}" update=":content"/>
-					<h:column />
-				</h:panelGrid>
-				
-				<p:dataTable id="recorrencias" value="#{verificarRecorrenciaBean.recorrencias}" var="reg">
-					<p:column headerText="Nome da pessoa" sortBy="#{reg.nome}">
-						#{reg.nome}
+
+			<h:panelGroup rendered="#{obterEnderecosDeCoordenadasBean.viaturas != null}">
+				<h:form>
+					<p:commandButton value="Limpar" actionListener="#{obterEnderecosDeCoordenadasBean.limpar}" update="@all"></p:commandButton>
+
+					<p:commandButton value="Download" ajax="false" actionListener="#{obterEnderecosDeCoordenadasBean.prepararDownload}">
+						<p:fileDownload value="#{obterEnderecosDeCoordenadasBean.file}" />
+					</p:commandButton>
+				</h:form>
+
+				<p:separator></p:separator>
+
+				<p:dataTable styleClass="pmgo-table" id="recorrencias" value="#{obterEnderecosDeCoordenadasBean.viaturas}" var="reg">
+					<p:column width="80" headerText="Sequência" sortBy="#{reg.sequencia}" style="text-align: center">
+						#{reg.sequencia}
 					</p:column>
-					<p:column headerText="Quantidade de listas em que a pessoa foi encontrada" sortBy="#{reg.listas.size()}">
-						#{reg.listas.size()}
+
+					<p:column width="80" headerText="Prefixo" sortBy="#{reg.prefixo}">
+						#{reg.prefixo}
 					</p:column>
-					<p:column headerText="Listas em que a pessoa foi encontrada">
-						<ui:repeat var="l" value="#{reg.listas}">
-							<span class="item-lista-linha">##{l + 1}</span>
-						</ui:repeat>
+
+					<p:column width="80" headerText="Unidade" sortBy="#{reg.unidade}">
+						#{reg.unidade}
+					</p:column>
+
+					<p:column width="120" headerText="Data/Hora" sortBy="#{reg.dataHora}">
+						#{reg.dataHoraFormatada}
+					</p:column>
+
+					<p:column width="120" headerText="Latitude" sortBy="#{reg.latitude}" style="text-align: right">
+						#{reg.latitude}
+					</p:column>
+
+					<p:column width="120" headerText="Longitude" sortBy="#{reg.longitude}" style="text-align: right">
+						#{reg.longitude}
+					</p:column>
+
+					<p:column width="15" style="text-align: center">
+						<f:facet name="header">
+							<span class="fas fa-map-marked-alt"></span>
+						</f:facet>
+
+						<p:link target="_blank" href="https://www.google.com/maps/place/#{reg.latitude},#{reg.longitude}" title="Ir para Google Maps">
+							<span class="fas fa-map-marker-alt" style="color: red; font-size: 16px;"></span>
+						</p:link>
+					</p:column>
+
+					<p:column headerText="Endereço" sortBy="#{reg.endRua}">
+						#{reg.endRua}
+					</p:column>
+
+					<p:column headerText="Bairro" sortBy="#{reg.endBairro}">
+						#{reg.endBairro}
+					</p:column>
+
+					<p:column headerText="Município" sortBy="#{reg.endMunicipio}">
+						#{reg.endMunicipio}
+					</p:column>
+
+					<p:column width="15" headerText="+" style="text-align: center">
+						<p:commandLink
+								title="Mostrar JSON completo"
+								actionListener="#{obterEnderecosDeCoordenadasBean.showJson}"
+								oncomplete="PF('dialogJson').show()"
+								update=":#{p:component('dialogJsonDados')}">
+							<f:attribute value="#{reg}" name="registro"></f:attribute>
+							<span class="fas fa-search-plus" style="color: #2222aa; font-size: 16px;"></span>
+						</p:commandLink>
 					</p:column>
 				</p:dataTable>
+
+				<p:dialog position="center" closeOnEscape="true" id="dialogJson" widgetVar="dialogJson" width="600" height="500" header="JSON Completo Retornado pelo Serviço do Tomtom" modal="true" dynamic="true" closable="true">
+					<h:panelGroup id="dialogJsonDados">
+						<pre><code>#{obterEnderecosDeCoordenadasBean.registro.endJson}</code></pre>
+					</h:panelGroup>
+				</p:dialog>
 			</h:panelGroup>
 		</p:panel>
 	</h:body>
