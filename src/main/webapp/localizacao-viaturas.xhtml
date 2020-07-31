@@ -1,106 +1,132 @@
 <f:view xmlns="http://www.w3c.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:ng="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui">
-	<h:head>
-		<meta charset="utf-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-		<title>Recorrências [#{helloWorldBean.hello}]</title>
-	</h:head>
-	<h:body>
-		<ui:include src="menu.xhtml"></ui:include>
-			
-		<p:panel id="content" header="Localização de Viaturas" >
-			<h:panelGroup rendered="#{obterEnderecosDeCoordenadasBean.viaturas == null}">
-				<h:form enctype="multipart/form-data">
-					<p:messages autoUpdate="true" showDetail="true" />
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>Recorrências [#{helloWorldBean.hello}]</title>
+    </h:head>
+    <h:body>
+        <ui:include src="menu.xhtml"></ui:include>
 
-					<p:fileUpload
-						fileUploadListener="#{obterEnderecosDeCoordenadasBean.handleFileUpload}"
-						mode="advanced" auto="true" dragDropSupport="false" multiple="false" 
-						sizeLimit="100000" allowTypes="/(\.|\/)(xlsx|xltx)$/" update=":content"
-						label="Escolha um arquivo XLSX" onstart="loadingStart()" oncomplete="loadingStop()" />
-				</h:form>
-			</h:panelGroup>
+        <p:panel id="content" header="Localização de Viaturas">
+            <p:messages autoUpdate="true" showDetail="true"/>
 
-			<h:panelGroup rendered="#{obterEnderecosDeCoordenadasBean.viaturas != null}">
-				<h:form>
-					<p:commandButton value="Limpar" actionListener="#{obterEnderecosDeCoordenadasBean.limpar}" update="@all"></p:commandButton>
+            <h:panelGroup rendered="#{obterEnderecosDeCoordenadasBean.carregandoArquivo}">
+                <p:poll rendered="#{obterEnderecosDeCoordenadasBean.carregandoArquivo}"
+                        stop="#{!obterEnderecosDeCoordenadasBean.carregandoArquivo}"
+                        autoStart="true" interval="1"
+                        async="true" update=":content"
+                        global="false"
+                        listener="#{obterEnderecosDeCoordenadasBean.verificarStatus}"/>
 
-					<p:commandButton value="Download" ajax="false" actionListener="#{obterEnderecosDeCoordenadasBean.prepararDownload}">
-						<p:fileDownload value="#{obterEnderecosDeCoordenadasBean.file}" />
-					</p:commandButton>
-				</h:form>
+                <div style="text-align: center; vertical-align: middle; width: 100%;">
+                    <h3>Aguarde enquanto o arquivo está sendo carregado.</h3>
+                    <p:progressBar value="#{obterEnderecosDeCoordenadasBean.progresso.progresso * 100}"
+                                   labelTemplate="{value}%"
+                                   interval="3000"
+                                   ajax="true"
+                                   displayOnly="false"/>
+                </div>
+            </h:panelGroup>
 
-				<p:separator></p:separator>
+            <h:panelGroup
+                    rendered="#{!obterEnderecosDeCoordenadasBean.carregandoArquivo and obterEnderecosDeCoordenadasBean.viaturas == null}">
+                <h:form enctype="multipart/form-data">
+                    <p:fileUpload
+                            fileUploadListener="#{obterEnderecosDeCoordenadasBean.handleFileUpload}"
+                            mode="advanced" auto="true" dragDropSupport="false" multiple="false"
+                            sizeLimit="100000" allowTypes="/(\.|\/)(xlsx|xltx)$/" update=":content"
+                            label="Escolha um arquivo XLSX" onstart="loadingStart()" oncomplete="loadingStop()"/>
+                </h:form>
+            </h:panelGroup>
 
-				<p:dataTable styleClass="pmgo-table" id="recorrencias" value="#{obterEnderecosDeCoordenadasBean.viaturas}" var="reg">
-					<p:column width="80" headerText="Sequência" sortBy="#{reg.sequencia}" style="text-align: center">
-						#{reg.sequencia}
-					</p:column>
+            <h:panelGroup
+                    rendered="#{!obterEnderecosDeCoordenadasBean.carregandoArquivo and obterEnderecosDeCoordenadasBean.viaturas != null}">
+                <h:form>
+                    <p:commandButton value="Limpar" actionListener="#{obterEnderecosDeCoordenadasBean.limpar}"
+                                     update="@all"></p:commandButton>
 
-					<p:column width="80" headerText="Prefixo" sortBy="#{reg.prefixo}">
-						#{reg.prefixo}
-					</p:column>
+                    <p:commandButton value="Download" ajax="false"
+                                     actionListener="#{obterEnderecosDeCoordenadasBean.prepararDownload}">
+                        <p:fileDownload value="#{obterEnderecosDeCoordenadasBean.file}"/>
+                    </p:commandButton>
+                </h:form>
 
-					<p:column width="80" headerText="Unidade" sortBy="#{reg.unidade}">
-						#{reg.unidade}
-					</p:column>
+                <p:separator></p:separator>
 
-					<p:column width="120" headerText="Data/Hora" sortBy="#{reg.dataHora}">
-						#{reg.dataHoraFormatada}
-					</p:column>
+                <p:dataTable styleClass="pmgo-table" id="recorrencias"
+                             value="#{obterEnderecosDeCoordenadasBean.viaturas}" var="reg">
+                    <p:column width="80" headerText="Sequência" sortBy="#{reg.sequencia}" style="text-align: center">
+                        #{reg.sequencia}
+                    </p:column>
 
-					<p:column width="120" headerText="Latitude" sortBy="#{reg.latitude}" style="text-align: right">
-						#{reg.latitude}
-					</p:column>
+                    <p:column width="80" headerText="Prefixo" sortBy="#{reg.prefixo}">
+                        #{reg.prefixo}
+                    </p:column>
 
-					<p:column width="120" headerText="Longitude" sortBy="#{reg.longitude}" style="text-align: right">
-						#{reg.longitude}
-					</p:column>
+                    <p:column width="80" headerText="Unidade" sortBy="#{reg.unidade}">
+                        #{reg.unidade}
+                    </p:column>
 
-					<p:column width="15" style="text-align: center">
-						<f:facet name="header">
-							<span class="fas fa-map-marked-alt"></span>
-						</f:facet>
+                    <p:column width="120" headerText="Data/Hora" sortBy="#{reg.dataHora}">
+                        #{reg.dataHoraFormatada}
+                    </p:column>
 
-						<p:link target="_blank" href="https://www.google.com/maps/place/#{reg.latitude},#{reg.longitude}" title="Ir para Google Maps">
-							<span class="fas fa-map-marker-alt" style="color: red; font-size: 16px;"></span>
-						</p:link>
-					</p:column>
+                    <p:column width="120" headerText="Latitude" sortBy="#{reg.latitude}" style="text-align: right">
+                        #{reg.latitude}
+                    </p:column>
 
-					<p:column headerText="Endereço" sortBy="#{reg.endRua}">
-						#{reg.endRua}
-					</p:column>
+                    <p:column width="120" headerText="Longitude" sortBy="#{reg.longitude}" style="text-align: right">
+                        #{reg.longitude}
+                    </p:column>
 
-					<p:column headerText="Bairro" sortBy="#{reg.endBairro}">
-						#{reg.endBairro}
-					</p:column>
+                    <p:column width="15" style="text-align: center">
+                        <f:facet name="header">
+                            <span class="fas fa-map-marked-alt"></span>
+                        </f:facet>
 
-					<p:column headerText="Município" sortBy="#{reg.endMunicipio}">
-						#{reg.endMunicipio}
-					</p:column>
+                        <p:link target="_blank"
+                                href="https://www.google.com/maps/place/#{reg.latitude},#{reg.longitude}"
+                                title="Ir para Google Maps">
+                            <span class="fas fa-map-marker-alt" style="color: red; font-size: 16px;"></span>
+                        </p:link>
+                    </p:column>
 
-					<p:column width="15" headerText="+" style="text-align: center">
-						<p:commandLink
-								title="Mostrar JSON completo"
-								actionListener="#{obterEnderecosDeCoordenadasBean.showJson}"
-								oncomplete="PF('dialogJson').show()"
-								update=":#{p:component('dialogJsonDados')}">
-							<f:attribute value="#{reg}" name="registro"></f:attribute>
-							<span class="fas fa-search-plus" style="color: #2222aa; font-size: 16px;"></span>
-						</p:commandLink>
-					</p:column>
-				</p:dataTable>
+                    <p:column headerText="Endereço" sortBy="#{reg.endRua}">
+                        #{reg.endRua}
+                    </p:column>
 
-				<p:dialog position="center" closeOnEscape="true" id="dialogJson" widgetVar="dialogJson" width="600" height="500" header="JSON Completo Retornado pelo Serviço do Tomtom" modal="true" dynamic="true" closable="true">
-					<h:panelGroup id="dialogJsonDados">
-						<pre><code>#{obterEnderecosDeCoordenadasBean.registro.endJson}</code></pre>
-					</h:panelGroup>
-				</p:dialog>
-			</h:panelGroup>
-		</p:panel>
-	</h:body>
+                    <p:column headerText="Bairro" sortBy="#{reg.endBairro}">
+                        #{reg.endBairro}
+                    </p:column>
+
+                    <p:column headerText="Município" sortBy="#{reg.endMunicipio}">
+                        #{reg.endMunicipio}
+                    </p:column>
+
+                    <p:column width="15" headerText="+" style="text-align: center">
+                        <p:commandLink
+                                title="Mostrar JSON completo"
+                                actionListener="#{obterEnderecosDeCoordenadasBean.showJson}"
+                                oncomplete="PF('dialogJson').show()"
+                                update=":#{p:component('dialogJsonDados')}">
+                            <f:attribute value="#{reg}" name="registro"></f:attribute>
+                            <span class="fas fa-search-plus" style="color: #2222aa; font-size: 16px;"></span>
+                        </p:commandLink>
+                    </p:column>
+                </p:dataTable>
+
+                <p:dialog position="center" closeOnEscape="true" id="dialogJson" widgetVar="dialogJson" width="600"
+                          height="500" header="JSON Completo Retornado pelo Serviço do Tomtom" modal="true"
+                          dynamic="true" closable="true">
+                    <h:panelGroup id="dialogJsonDados">
+                        <pre><code>#{obterEnderecosDeCoordenadasBean.registro.endJson}</code></pre>
+                    </h:panelGroup>
+                </p:dialog>
+            </h:panelGroup>
+        </p:panel>
+    </h:body>
 </f:view>

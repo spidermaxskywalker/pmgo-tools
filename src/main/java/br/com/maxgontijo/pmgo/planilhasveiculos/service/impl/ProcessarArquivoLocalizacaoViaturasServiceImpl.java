@@ -2,6 +2,7 @@ package br.com.maxgontijo.pmgo.planilhasveiculos.service.impl;
 
 import br.com.maxgontijo.pmgo.planilhasveiculos.dto.LocalizacaoViaturaDto;
 import br.com.maxgontijo.pmgo.planilhasveiculos.service.ProcessarArquivoLocalizacaoViaturasService;
+import br.com.maxgontijo.pmgo.planilhasveiculos.util.Progresso;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -25,9 +26,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 @Service("processarArquivoLocalizacaoViaturasService")
 public class ProcessarArquivoLocalizacaoViaturasServiceImpl extends AbstractService implements ProcessarArquivoLocalizacaoViaturasService {
+    private static final Semaphore sem = new Semaphore(1);
+
     @Value("${pmgo.tomtom.api.services.reverseGeocode}")
     private String tomtomApiServiceUrlReverseGeocode;
 
@@ -38,124 +42,143 @@ public class ProcessarArquivoLocalizacaoViaturasServiceImpl extends AbstractServ
     private String googleMapsUrl;
 
     @Override
-    public List<LocalizacaoViaturaDto> processarArquivo(InputStream input, OutputStream output) {
-        List<LocalizacaoViaturaDto> registros = new ArrayList<>();
+    public List<LocalizacaoViaturaDto> processarArquivo(InputStream input, OutputStream output, Progresso progresso) {
+        if (sem.tryAcquire()) {
+            try {
+                List<LocalizacaoViaturaDto> registros = new ArrayList<>();
 
-        XSSFWorkbook workbook;
+                XSSFWorkbook workbook;
 
-        try {
-            workbook = new XSSFWorkbook(input);
-        } catch (Exception e) {
-            throw new RuntimeException("Arquivo inválido.", e);
-        }
-
-        CreationHelper createHelper = workbook.getCreationHelper();
-
-        for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-            XSSFSheet sheet = workbook.getSheetAt(i);
-
-            if (output != null) {
-                int CHARACTER_WIDTH_APROX = 256;
-                int[] newWidths = new int[]{30, 20, 20, 15};
-
-                XSSFRow row = sheet.getRow(0);
-                XSSFCell cell;
-                int indexCol = 6;
-
-                for (int j = 0; j < newWidths.length; j++) {
-                    sheet.setColumnWidth(j + indexCol, newWidths[j] * CHARACTER_WIDTH_APROX);
+                try {
+                    workbook = new XSSFWorkbook(input);
+                } catch (Exception e) {
+                    throw new RuntimeException("Arquivo inválido.", e);
                 }
 
-                cell = row.createCell(indexCol++);
-                cell.setCellValue("Endereço");
+                CreationHelper createHelper = workbook.getCreationHelper();
 
-                cell = row.createCell(indexCol++);
-                cell.setCellValue("Bairro");
+                progresso.setTotal(0);
+                for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+                    XSSFSheet sheet = workbook.getSheetAt(i);
+                    progresso.setTotal(progresso.getTotal() + sheet.getLastRowNum());
+                }
+                progresso.setCompleto(0);
 
-                cell = row.createCell(indexCol++);
-                cell.setCellValue("Município");
-
-                cell = row.createCell(indexCol++);
-                cell.setCellValue("Google Maps");
-            }
-
-            for (int j = 1; j <= sheet.getLastRowNum(); j++) {
-                XSSFRow row = sheet.getRow(j);
-
-                if (row != null) {
-                    int colIndex = 0;
-                    Integer sequencia = getCellInt(row.getCell(colIndex++));
-                    String prefixo = getCellString(row.getCell(colIndex++));
-                    String unidade = getCellString(row.getCell(colIndex++));
-                    Date dataHora = getCellDataTime(row.getCell(colIndex++));
-                    Double latitude = getCellDouble(row.getCell(colIndex++));
-                    Double longitude = getCellDouble(row.getCell(colIndex++));
-
-                    LocalizacaoViaturaDto viatura = new LocalizacaoViaturaDto();
-
-                    viatura.setSequencia(sequencia);
-                    viatura.setPrefixo(prefixo);
-                    viatura.setUnidade(unidade);
-                    viatura.setDataHora(dataHora);
-                    viatura.setLatitude(latitude);
-                    viatura.setLongitude(longitude);
-
-//                    switch (sequencia) {
-//                        case 227:
-//                        case 228:
-//                        case 175:
-//                            carregarEndereco(viatura);
-//                            break;
-//                    }
-                    carregarEndereco(viatura);
+                for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+                    XSSFSheet sheet = workbook.getSheetAt(i);
 
                     if (output != null) {
+                        int CHARACTER_WIDTH_APROX = 256;
+                        int[] newWidths = new int[]{30, 20, 20, 15};
+
+                        XSSFRow row = sheet.getRow(0);
                         XSSFCell cell;
-                        cell = row.createCell(colIndex++);
-                        cell.setCellValue(viatura.getEndRua());
+                        int indexCol = 6;
 
-                        cell = row.createCell(colIndex++);
-                        cell.setCellValue(viatura.getEndBairro());
-
-                        cell = row.createCell(colIndex++);
-                        cell.setCellValue(viatura.getEndMunicipio());
-
-                        String googleUrl;
-                        if (viatura.getLatitude() != null && viatura.getLongitude() != null) {
-                            googleUrl = MessageFormat.format(googleMapsUrl,
-                                    String.format("%.15f", viatura.getLatitude()).replaceAll(",", "."),
-                                    String.format("%.15f", viatura.getLongitude()).replaceAll(",", "."));
-                        } else {
-                            googleUrl = "";
+                        for (int j = 0; j < newWidths.length; j++) {
+                            sheet.setColumnWidth(j + indexCol, newWidths[j] * CHARACTER_WIDTH_APROX);
                         }
 
-                        cell = row.createCell(colIndex++);
-                        Hyperlink link = createHelper.createHyperlink(HyperlinkType.URL);
-                        link.setAddress(googleUrl);
-                        cell.setCellValue(googleUrl);
-                        cell.setHyperlink(link);
+                        cell = row.createCell(indexCol++);
+                        cell.setCellValue("Endereço");
+
+                        cell = row.createCell(indexCol++);
+                        cell.setCellValue("Bairro");
+
+                        cell = row.createCell(indexCol++);
+                        cell.setCellValue("Município");
+
+                        cell = row.createCell(indexCol++);
+                        cell.setCellValue("Google Maps");
                     }
 
-                    registros.add(viatura);
+                    for (int j = 1; j <= sheet.getLastRowNum(); j++) {
+                        XSSFRow row = sheet.getRow(j);
+
+                        if (row != null) {
+                            int colIndex = 0;
+                            Integer sequencia = getCellInt(row.getCell(colIndex++));
+                            String prefixo = getCellString(row.getCell(colIndex++));
+                            String unidade = getCellString(row.getCell(colIndex++));
+                            Date dataHora = getCellDataTime(row.getCell(colIndex++));
+                            Double latitude = getCellDouble(row.getCell(colIndex++));
+                            Double longitude = getCellDouble(row.getCell(colIndex++));
+
+                            LocalizacaoViaturaDto viatura = new LocalizacaoViaturaDto();
+
+                            viatura.setSequencia(sequencia);
+                            viatura.setPrefixo(prefixo);
+                            viatura.setUnidade(unidade);
+                            viatura.setDataHora(dataHora);
+                            viatura.setLatitude(latitude);
+                            viatura.setLongitude(longitude);
+
+                            carregarEndereco(viatura);
+
+                            if (output != null) {
+                                XSSFCell cell;
+                                cell = row.createCell(colIndex++);
+                                cell.setCellValue(viatura.getEndRua());
+
+                                cell = row.createCell(colIndex++);
+                                cell.setCellValue(viatura.getEndBairro());
+
+                                cell = row.createCell(colIndex++);
+                                cell.setCellValue(viatura.getEndMunicipio());
+
+                                String googleUrl;
+                                if (viatura.getLatitude() != null && viatura.getLongitude() != null) {
+                                    googleUrl = MessageFormat.format(googleMapsUrl,
+                                            String.format("%.15f", viatura.getLatitude()).replaceAll(",", "."),
+                                            String.format("%.15f", viatura.getLongitude()).replaceAll(",", "."));
+                                } else {
+                                    googleUrl = "";
+                                }
+
+                                cell = row.createCell(colIndex++);
+                                Hyperlink link = createHelper.createHyperlink(HyperlinkType.URL);
+                                link.setAddress(googleUrl);
+                                cell.setCellValue(googleUrl);
+                                cell.setHyperlink(link);
+                            }
+
+                            registros.add(viatura);
+                        }
+
+                        progresso.incrementarProgresso();
+                    }
                 }
-            }
-        }
 
-        try {
-            workbook.write(output);
-        } catch (IOException e) {
-            try {
-                workbook.close();
-            } catch (IOException e2) {
-                throw new RuntimeException("Erro ao fechar a arquivo.", e);
-            }
-            throw new RuntimeException("Erro ao gerar arquivo.", e);
-        }
+                try {
+                    workbook.write(output);
+                } catch (IOException e) {
+                    try {
+                        workbook.close();
+                    } catch (IOException e2) {
+                        throw new RuntimeException("Erro ao fechar a arquivo.", e);
+                    }
+                    throw new RuntimeException("Erro ao gerar arquivo.", e);
+                }
 
-        return registros;
+                return registros;
+            } finally {
+                sem.release();
+            }
+        } else {
+            throw new RuntimeException("Erro ao tentar processar dois arquivos simultaneamente. Aguarde o processo em execução terminar.");
+        }
     }
 
     private void carregarEndereco(LocalizacaoViaturaDto viatura) {
+//        if (true) {
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            return;
+//        }
+
         boolean tentarDeNovo = false;
         do {
             try {

@@ -1,6 +1,6 @@
 package br.com.maxgontijo.pmgo.planilhasveiculos.util;
 
-public class DownlodProgress {
+public class Progresso {
     private int total;
     private int completo;
 
