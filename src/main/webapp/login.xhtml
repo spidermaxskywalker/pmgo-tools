@@ -1,0 +1,24 @@
+<f:view xmlns="http://www.w3c.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>Autenticação [#{helloWorldBean.hello}]</title>
+    </h:head>
+    <h:body>
+        <p:panel id="content" header="Login">
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="Usuário:"/>
+                    <p:inputText value="#{autenticacaoBean.username}"></p:inputText>
+
+                    <h:outputText value="Senha:"/>
+                    <p:password value="#{autenticacaoBean.password}"/>
+                </h:panelGrid>
+                <p:commandButton value="Entrar" action="#{autenticacaoBean.login}"/>
+            </h:form>
+        </p:panel>
+    </h:body>
+</f:view>

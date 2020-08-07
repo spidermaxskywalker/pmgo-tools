@@ -134,7 +134,7 @@ public class UtilValidacao {
 					messages.add("O atributo " + propertiesAndFieldNames[i + 1] + " é obrigatório.");
 				}
 			} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				throw new IunesException(e);
+				throw new PmException(e);
 			}
 		}
 

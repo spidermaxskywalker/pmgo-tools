@@ -20,6 +20,8 @@
 	</h:head>
 	
 	<h:form id="formMenu">
+		<p:importEnum type="br.com.maxgontijo.pmgo.planilhasveiculos.model.enums.Acesso" var="Acesso" allSuffix="ALL_ENUM_VALUES" />
+
 		<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
 
 		<p:dialog blockScroll="true" position="top" width="300" height="250" modal="true" widgetVar="statusDialog" header="Aguarde" draggable="false" closable="false" resizable="false">
@@ -31,14 +33,34 @@
 		<p:menubar>
 			<p:menuitem value="Início"   icon="fa fa-home"   action="index?faces-redirect=true" />
 			
-			<p:menuitem rendered="false" value="Veículos" icon="fa fa-car"    action="veiculos?faces-redirect=true" />
-			<p:menuitem rendered="false" value="Radares"  icon="fa fa-camera" action="radares?faces-redirect=true" />
-			<p:menuitem value="Recorrencias"  icon="fas fa-street-view" action="verificar-recorrencia?faces-redirect=true" />
-			<p:menuitem value="Mandados de Monitorados"  icon="fas fa-user-secret" action="verificar-monitorados-mandados?faces-redirect=true" />
-			<p:menuitem value="Localização de Viaturas"  icon="fas fa-map-marker-alt" action="localizacao-viaturas?faces-redirect=true" />
+			<p:menuitem rendered="#{helloWorldBean.isTemAcesso(Acesso.RECORRENCIAS)}" value="Recorrencias"  icon="fas fa-street-view" action="verificar-recorrencia?faces-redirect=true" />
+			<p:menuitem rendered="#{helloWorldBean.isTemAcesso(Acesso.MANDADOS_MONITORADOS)}" value="Mandados de Monitorados"  icon="fas fa-user-secret" action="verificar-monitorados-mandados?faces-redirect=true" />
+			<p:menuitem rendered="#{helloWorldBean.isTemAcesso(Acesso.LOCALIZACAO_VIATURAS)}" value="Localização de Viaturas"  icon="fas fa-map-marker-alt" action="localizacao-viaturas?faces-redirect=true" />
+			<p:menuitem rendered="#{helloWorldBean.isTemAcesso(Acesso.ADMIN)}" value="Usuários"  icon="fas fa-users" action="usuarios?faces-redirect=true" />
 			
 			<f:facet name="options">
+				<p:menuButton value="#{helloWorldBean.usuarioLogado.username}">
+					<p:menuitem value="Alterar Senha" actionListener="#{helloWorldBean.prepararAlterarSenha}" icon="fas fa-key" oncomplete="PF('alterarSenhaDialog').show()" />
+					<p:separator />
+					<p:menuitem value="Sair" ajax="false" action="#{autenticacaoBean.logout}" icon="fas fa-sign-out-alt" />
+				</p:menuButton>
 	        </f:facet>
 		</p:menubar>
+
+		<p:messages autoUpdate="true" showDetail="true"/>
+
+		<p:dialog header="Alteração de Senha" widgetVar="alterarSenhaDialog" modal="true">
+			<h:panelGrid columns="2">
+				<h:outputLabel value="Senha Atual" for="senha-atual" />
+				<p:password id="senha-atual" value="#{helloWorldBean.senhaAtual}" />
+
+				<h:outputLabel value="Senha Nova" for="senha-nova-1" />
+				<p:password id="senha-nova-1" value="#{helloWorldBean.senhaNova1}" />
+
+				<h:outputLabel value="Repita a Senha Nova" for="senha-nova-2" />
+				<p:password id="senha-nova-2" value="#{helloWorldBean.senhaNova2}" />
+			</h:panelGrid>
+			<p:commandButton value="Alterar" actionListener="#{helloWorldBean.alterarMinhaSenha}" update="@all" process="@this,@form" oncomplete="PF('alterarSenhaDialog').hide()"/>
+		</p:dialog>
 	</h:form>
 </f:view>

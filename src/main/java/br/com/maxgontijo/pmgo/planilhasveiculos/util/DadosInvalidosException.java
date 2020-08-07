@@ -3,7 +3,7 @@ package br.com.maxgontijo.pmgo.planilhasveiculos.util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DadosInvalidosException extends IunesException {
+public class DadosInvalidosException extends PmException {
 	private static final long serialVersionUID = 1L;
 
 	private final List<String> messages;

@@ -1,6 +1,7 @@
 package br.com.maxgontijo.pmgo.planilhasveiculos.jsf;
 
 import br.com.maxgontijo.pmgo.planilhasveiculos.dto.LocalizacaoViaturaDto;
+import br.com.maxgontijo.pmgo.planilhasveiculos.model.enums.Acesso;
 import br.com.maxgontijo.pmgo.planilhasveiculos.service.ProcessarArquivoLocalizacaoViaturasService;
 import br.com.maxgontijo.pmgo.planilhasveiculos.util.Progresso;
 import org.primefaces.event.FileUploadEvent;
@@ -21,6 +22,7 @@ import java.util.List;
 @ManagedBean
 //@ViewScoped
 @SessionScoped
+@AcessoBean(Acesso.LOCALIZACAO_VIATURAS)
 public class ObterEnderecosDeCoordenadasBean extends GenericJsfBean {
     private @Autowired
     ProcessarArquivoLocalizacaoViaturasService processarArquivoLocalizacaoViaturasService;

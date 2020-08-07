@@ -2,6 +2,7 @@ package br.com.maxgontijo.pmgo.planilhasveiculos.jsf;
 
 import br.com.maxgontijo.pmgo.planilhasveiculos.dto.MandadoDto;
 import br.com.maxgontijo.pmgo.planilhasveiculos.model.ArquivoCsv;
+import br.com.maxgontijo.pmgo.planilhasveiculos.model.enums.Acesso;
 import br.com.maxgontijo.pmgo.planilhasveiculos.service.ProcessarArquivoMandadosMonitoradosService;
 import br.com.maxgontijo.pmgo.planilhasveiculos.util.UtilZip;
 import org.primefaces.component.export.ExcelOptions;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @ManagedBean
 @ViewScoped
+@AcessoBean(Acesso.MANDADOS_MONITORADOS)
 public class VerificarMonitoradosMandadosBean extends GenericJsfBean {
     private @Autowired
     ProcessarArquivoMandadosMonitoradosService processarArquivoMandadosMonitoradosService;

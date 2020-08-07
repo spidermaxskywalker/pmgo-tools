@@ -50,3 +50,10 @@
 	float: left;
 }
 
+.pmgo-tag {
+	margin: 2px;
+	padding: 5px;
+	border: 2px solid;
+	border-radius: 15px;
+	background-color: #e5e5e5;
+}

@@ -15,11 +15,10 @@
 		<p:panel id="content" header="Recorrências" >
 			<h:panelGroup rendered="#{verificarRecorrenciaBean.recorrencias == null}">
 				<h:form enctype="multipart/form-data">
-					<p:messages autoUpdate="true" showDetail="true" />
 					<p:fileUpload
 						fileUploadListener="#{verificarRecorrenciaBean.handleFileUpload}"
 						mode="advanced" auto="true" dragDropSupport="false" multiple="false" 
-						sizeLimit="100000" allowTypes="/(\.|\/)(xlsx|xltx)$/" update=":content"
+						allowTypes="/(\.|\/)(xlsx|xltx)$/" update=":content"
 						label="Escolha um arquivo XLS" />
 				</h:form>
 			</h:panelGroup>

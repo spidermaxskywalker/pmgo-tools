@@ -1,0 +1,91 @@
+<f:view xmlns="http://www.w3c.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>Usuários [#{helloWorldBean.hello}]</title>
+    </h:head>
+    <h:body>
+        <ui:include src="menu.xhtml"></ui:include>
+
+        <h:form>
+            <p:panel id="content" header="Usuários">
+                <p:importEnum type="br.com.maxgontijo.pmgo.planilhasveiculos.model.enums.Acesso" var="Acesso" allSuffix="ALL_ENUM_VALUES" />
+
+                <p:commandButton value="Novo" actionListener="#{usuarioBean.novoUsuario}" update=":#{p:component('userDados')}" oncomplete="PF('userEditDialog').show()"/>
+
+                <p:dataTable styleClass="pmgo-table" id="usuarios"
+                             value="#{usuarioBean.usuarios}" var="usuario">
+                    <p:column width="250" headerText="Usuário" sortBy="#{usuario.username}">
+                        #{usuario.username}
+                    </p:column>
+
+                    <p:column headerText="Acessos" style="padding: 15px;">
+                        <ui:repeat value="#{usuario.acessos}" var="acesso">
+                            <h:outputText styleClass="pmgo-tag" style="margin-right: 10px;" value="#{acesso.descricao}" />
+                        </ui:repeat>
+                    </p:column>
+
+                    <p:column width="60" headerText="Ativo" sortBy="#{usuario.ativo}">
+                        <h:outputText style="color: green; font-weight: bold;" value="Sim" rendered="#{usuario.ativo}" />
+                        <h:outputText style="color: red; font-weight: bold;" value="Não" rendered="#{!usuario.ativo}" />
+                    </p:column>
+
+                    <p:column width="50" headerText="">
+                        <p:commandLink
+                                rendered="#{usuario.username != 'admin'}"
+                                title="Editar"
+                                actionListener="#{usuarioBean.selecionarUsuario}"
+                                update="#{p:component('userDados')}"
+                                oncomplete="PF('userEditDialog').show()"><span class="fas fa-edit" style="font-size: 16px;"></span>
+                            <f:attribute value="#{usuario}" name="usuario"></f:attribute>
+                        </p:commandLink>
+                        <p:commandLink
+                                rendered="#{usuario.username != 'admin' and usuario.id != helloWorldBean.usuarioLogado.id}"
+                                title="Remover"
+                                actionListener="#{usuarioBean.removerUsuario}"
+                                update="@all"
+                                style="margin-left: 10px;"><span class="fas fa-trash" style="font-size: 16px; color: red;"></span>
+                            <f:attribute value="#{usuario}" name="usuario"></f:attribute>
+                            <p:confirm header="Confirmação de Remoção" message="Deseja realmente remover este usuário?" icon="pi pi-exclamation-triangle" />
+                        </p:commandLink>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+
+            <p:dialog id="userDados" widgetVar="userEditDialog" modal="true" header="#{(usuarioBean.usuario != null and usuarioBean.usuario.id == null) ? 'Novo' : 'Editar'} Usuário">
+                <h:panelGroup rendered="#{usuarioBean.usuario != null}">
+                    <h:panelGrid columns="2" rendered="#{usuarioBean.usuario != null}">
+                        <h:outputText value="Usuário" />
+                        <p:inputText value="#{usuarioBean.usuario.username}" />
+
+                        <h:outputText rendered="#{usuarioBean.usuario.id == null}" value="Senha" />
+                        <p:password rendered="#{usuarioBean.usuario.id == null}" value="#{usuarioBean.usuario.password}" />
+
+                        <h:outputText rendered="#{usuarioBean.usuario.id != null}" value="Ativo" />
+                        <p:selectBooleanCheckbox rendered="#{usuarioBean.usuario.id != null}" value="#{usuarioBean.usuario.ativo}" />
+                    </h:panelGrid>
+
+                    <h:panelGroup rendered="#{usuarioBean.usuario != null and usuarioBean.usuario.id != null}">
+                        <ui:repeat value="#{usuarioBean.acessosUsuario}" var="a">
+                            <div>
+                                <p:selectBooleanCheckbox id="acessoUsuario" value="#{a.selecionado}" />
+                                <h:outputLabel style="margin-left: 5px" for="acessoUsuario" value="#{a.acesso.descricao}" />
+                            </div>
+                        </ui:repeat>
+                    </h:panelGroup>
+
+                    <p:commandButton value="Salvar" actionListener="#{usuarioBean.salvar}" update="#{p:component('usuarios')}" oncomplete="if (args.sucesso) { PF('userEditDialog').hide(); }"/>
+                </h:panelGroup>
+            </p:dialog>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="fas fa-check" />
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="fas fa-times" />
+            </p:confirmDialog>
+        </h:form>
+    </h:body>
+</f:view>
