@@ -36,6 +36,7 @@
 			<p:menuitem rendered="#{helloWorldBean.isTemAcesso(Acesso.RECORRENCIAS)}" value="Recorrencias"  icon="fas fa-street-view" action="verificar-recorrencia?faces-redirect=true" />
 			<p:menuitem rendered="#{helloWorldBean.isTemAcesso(Acesso.MANDADOS_MONITORADOS)}" value="Mandados de Monitorados"  icon="fas fa-user-secret" action="verificar-monitorados-mandados?faces-redirect=true" />
 			<p:menuitem rendered="#{helloWorldBean.isTemAcesso(Acesso.LOCALIZACAO_VIATURAS)}" value="Localização de Viaturas"  icon="fas fa-map-marker-alt" action="localizacao-viaturas?faces-redirect=true" />
+			<p:menuitem rendered="#{helloWorldBean.isTemAcesso(Acesso.VEICULOS)}" value="Veículos"  icon="fas fa-users" action="veiculos?faces-redirect=true" />
 			<p:menuitem rendered="#{helloWorldBean.isTemAcesso(Acesso.ADMIN)}" value="Usuários"  icon="fas fa-users" action="usuarios?faces-redirect=true" />
 			
 			<f:facet name="options">

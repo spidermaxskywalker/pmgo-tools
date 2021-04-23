@@ -1,0 +1,113 @@
+<f:view xmlns="http://www.w3c.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>Veículos [#{helloWorldBean.hello}]</title>
+    </h:head>
+    <h:body>
+        <ui:include src="menu.xhtml"></ui:include>
+
+        <h:form>
+            <p:panel id="content" header="Veículos">
+                <p:importEnum type="br.com.maxgontijo.pmgo.planilhasveiculos.model.enums.TipoVeiculo" var="TipoVeiculo"
+                              allSuffix="ALL_ENUM_VALUES"/>
+
+                <p:outputPanel rendered="#{veiculoBean.veiculos == null or veiculoBean.veiculos.size() == 0}">
+                    <div class="ui-fluid">
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank">
+                            <h:outputText value="Placas" />
+                            <h:outputText value="Informe as placas separadas por espaço e/ou quebras de linhas." style="font-style: italic; font-size: smaller;"/>
+                            <p:inputTextarea value="#{veiculoBean.placas}" rows="15" autoResize="false"/>
+                        </p:panelGrid>
+                    </div>
+                    <p:commandButton value="Processar placas" update="@all" actionListener="#{veiculoBean.processarPlacas}"/>
+                </p:outputPanel>
+
+                <p:outputPanel rendered="#{veiculoBean.veiculos != null and veiculoBean.veiculos.size() > 0}">
+                    <p:dataTable styleClass="pmgo-table-scroll" id="veiculos"
+                                 value="#{veiculoBean.veiculos}" var="v"
+                                 scrollable="true" scrollHeight="300" scrollRows="300">
+
+                        <f:facet name="footer">
+                            <h:outputText value="Quantidade de Placas Distintas: #{veiculoBean.veiculos.size()}" />
+                        </f:facet>
+
+                        <p:column width="120" headerText="Status" sortBy="#{v.placaCadastrada}">
+                            <h:outputText rendered="#{v.id == null}" class="fas fa-star" value="Nova Placa"/>
+                            <h:outputText rendered="#{v.id != null}" value="Placa já cadastrada"/>
+                        </p:column>
+
+                        <p:column width="100" headerText="Placa" sortBy="#{v.placa}">
+                            <h:outputText value="#{v.placa}" style="font-family: monospace" />
+                        </p:column>
+
+                        <p:column width="100" headerText="Tipo" sortBy="#{v.tipo}">
+                            #{v.tipo.descricao}
+                        </p:column>
+
+                        <p:column headerText="Observações">
+                            #{v.observacoes}
+                        </p:column>
+
+                        <p:column width="50" headerText="">
+                            <p:commandLink
+                                    title="Editar"
+                                    actionListener="#{veiculoBean.selecionarVeiculo}"
+                                    update="#{p:component('veiculoDados')}"
+                                    oncomplete="PF('veiculoEditDialog').show()"><span class="fas fa-edit"
+                                                                                      style="font-size: 16px;"></span>
+                                <f:attribute value="#{v}" name="veiculo"></f:attribute>
+                            </p:commandLink>
+                        </p:column>
+                    </p:dataTable>
+
+                    <p:commandButton value="Limpar" actionListener="#{veiculoBean.clear}" update="@all" process="@this"/>
+
+                    <p:commandButton value="Salvar" actionListener="#{veiculoBean.salvar}" update="@all" process="@this"/>
+
+                    <p:commandButton value="Exportar Placas" actionListener="#{veiculoBean.exportarPlacasTxt}" update="exportarPlacas" process="@this" oncomplete="PF('exportarPlacasDialog').show()"/>
+                </p:outputPanel>
+            </p:panel>
+
+            <p:dialog id="veiculoDados" widgetVar="veiculoEditDialog" modal="true" header="Editar" closable="false" maximizable="false">
+                <h:panelGroup rendered="#{veiculoBean.veiculo != null}">
+                    <div class="ui-fluid">
+                        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-4, ui-grid-col-8">
+                            <h:outputLabel value="Placa"/>
+                            <h:outputText value="#{veiculoBean.veiculo.placa}"/>
+
+                            <h:outputLabel value="Tipo"/>
+                            <p:selectOneMenu value="#{veiculoBean.veiculo.tipo}">
+                                <f:selectItem itemLabel=""/>
+                                <f:selectItems value="#{TipoVeiculo.ALL_ENUM_VALUES}" var="tp" itemLabel="#{tp.descricao}"
+                                               itemValue="#{tp}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Observações"/>
+                            <p:inputTextarea value="#{veiculoBean.veiculo.observacoes}" rows="5" autoResize="false" maxlength="512"/>
+                        </p:panelGrid>
+                    </div>
+
+                    <p:commandButton value="Fechar" update="#{p:component('veiculos')}" oncomplete="PF('veiculoEditDialog').hide()" actionListener="#{veiculoBean.clearVeiculo}"/>
+                </h:panelGroup>
+            </p:dialog>
+
+            <p:dialog id="exportarPlacas" widgetVar="exportarPlacasDialog" modal="true" header="Placas" closable="false" maximizable="false">
+                <div class="ui-fluid">
+                    <p:inputTextarea value="#{veiculoBean.placasExportadas}" rows="10" autoResize="false"/>
+                </div>
+
+                <p:commandButton type="button" ajax="false" value="Fechar" onclick="PF('exportarPlacasDialog').hide()"/>
+            </p:dialog>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="fas fa-check"/>
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="fas fa-times"/>
+            </p:confirmDialog>
+        </h:form>
+    </h:body>
+</f:view>

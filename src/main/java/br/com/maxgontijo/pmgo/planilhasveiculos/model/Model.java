@@ -6,6 +6,7 @@ public abstract class Model<ID extends Serializable> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final String SCHEMA_AUTENTICACAO = "autenticacao";
+    public static final String SCHEMA_CADASTRO = "cadastro";
 
     protected ID id;
 

@@ -4,7 +4,11 @@
 }
 
 .ui-datatable,
-.ui-datatable .ui-datatable-tablewrapper table {
+.ui-datatable .ui-datatable-tablewrapper table,
+.ui-datatable .ui-datatable-scrollable-header,
+.ui-datatable .ui-datatable-scrollable-header table,
+.ui-datatable .ui-datatable-scrollable-body,
+.ui-datatable .ui-datatable-scrollable-body table{
 	font-size: 12px !important;
 }
 
