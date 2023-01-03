@@ -1,0 +1,6 @@
+  {
+    "deploy": {
+      "goal": "springboot:run"
+    }
+  }
+
