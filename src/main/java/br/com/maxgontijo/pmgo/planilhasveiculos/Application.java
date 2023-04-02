@@ -36,10 +36,13 @@ public class Application extends SpringBootServletInitializer {
     }
 
     @Bean
-    public ServletRegistrationBean<FacesServlet> servletRegistrationBean() {
+    public ServletRegistrationBean<FacesServlet> servletRegistrationBean(ServletContext servletContext) {
+        servletContext.setInitParameter("com.sun.faces.forceLoadConfiguration", Boolean.TRUE.toString());
+
         FacesServlet servlet = new FacesServlet();
         servlet.getServletInfo();
         ServletRegistrationBean<FacesServlet> servletRegistrationBean = new ServletRegistrationBean<>(servlet, "*.jsf");
+        servletRegistrationBean.setLoadOnStartup(1);
         return servletRegistrationBean;
     }
 
@@ -66,6 +69,7 @@ public class Application extends SpringBootServletInitializer {
             public void onStartup(ServletContext servletContext) throws ServletException {
                 servletContext.setInitParameter("primefaces.UPLOADER", "commons");
                 servletContext.setInitParameter("primefaces.FONT_AWESOME", "true");
+//                servletContext.addListener(com.sun.faces.config.ConfigureListener.class);
             }
         };
     }

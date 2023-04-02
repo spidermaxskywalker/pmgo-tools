@@ -3,11 +3,13 @@ package br.com.maxgontijo.pmgo.planilhasveiculos.jsf;
 import br.com.maxgontijo.pmgo.planilhasveiculos.service.UsuarioService;
 import br.com.maxgontijo.pmgo.planilhasveiculos.util.UtilSessao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class AutenticacaoBean extends GenericJsfBean {
     private @Autowired
@@ -15,6 +17,10 @@ public class AutenticacaoBean extends GenericJsfBean {
 
     private String username;
     private String password;
+
+    public AutenticacaoBean() {
+        System.out.println("Teste");
+    }
 
     public String logout() {
         UtilSessao.invalidateSession();

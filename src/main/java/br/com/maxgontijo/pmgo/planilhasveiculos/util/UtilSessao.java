@@ -13,6 +13,9 @@ public class UtilSessao {
     }
 
     public static HttpSession getSession(boolean createIfNotExists) {
+        if (FacesContext.getCurrentInstance() == null) {
+            return null;
+        }
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(createIfNotExists);
         return session;
     }

@@ -19,14 +19,16 @@ abstract class GenericJsfBean {
                 throw new BeanSemAcessoException();
             }
             boolean achou = false;
-            for (Acesso a : acessos) {
-                if (UtilSessao.getUsuarioLogado().getAcessos().contains(a)) {
-                    achou = true;
-                    break;
+            if (UtilSessao.getSession() != null) {
+                for (Acesso a : acessos) {
+                    if (UtilSessao.getUsuarioLogado().getAcessos().contains(a)) {
+                        achou = true;
+                        break;
+                    }
                 }
-            }
-            if (!achou) {
-                throw new BeanSemAcessoException();
+                if (!achou) {
+                    throw new BeanSemAcessoException();
+                }
             }
         }
     }

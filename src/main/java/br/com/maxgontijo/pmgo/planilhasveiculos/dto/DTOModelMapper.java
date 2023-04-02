@@ -8,7 +8,6 @@ import java.util.Collections;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.core.MethodParameter;
@@ -96,7 +95,7 @@ public class DTOModelMapper extends RequestResponseBodyMethodProcessor {
 //		throw new RuntimeException("Não foi encontrada a anotação " + DTO.class.getName() + " no retorno do método " + returnType.getMethod().getDeclaringClass().getName() + "." + returnType.getMethod().getName() + ".");
 //	}
 
-	private Object getEntityId(@NotNull Object dto) {
+	private Object getEntityId(Object dto) {
 		for (Field field : dto.getClass().getDeclaredFields()) {
 			if (field.getAnnotation(Id.class) != null) {
 				try {
