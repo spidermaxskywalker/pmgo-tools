@@ -8,6 +8,8 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -19,9 +21,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
-@ManagedBean
-//@ViewScoped
-@SessionScoped
+@Component
+@SessionScope
 @AcessoBean(Acesso.LOCALIZACAO_VIATURAS)
 public class ObterEnderecosDeCoordenadasBean extends GenericJsfBean {
     private @Autowired

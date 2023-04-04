@@ -10,7 +10,7 @@ import javax.faces.context.FacesContext;
 
 abstract class GenericJsfBean {
     public GenericJsfBean() {
-        IunesSpringApplicationContext.getContext().getAutowireCapableBeanFactory().autowireBean(this);
+//        IunesSpringApplicationContext.getContext().getAutowireCapableBeanFactory().autowireBean(this);
 
         AcessoBean ann = getClass().getAnnotation(AcessoBean.class);
         if (ann != null) {

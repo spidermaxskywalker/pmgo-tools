@@ -5,14 +5,14 @@ import br.com.maxgontijo.pmgo.planilhasveiculos.model.enums.Acesso;
 import br.com.maxgontijo.pmgo.planilhasveiculos.service.VeiculoService;
 import br.com.maxgontijo.pmgo.planilhasveiculos.util.DadosInvalidosException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import java.util.List;
 
-@ManagedBean
-@ViewScoped
+@Component
+@Scope("view")
 @AcessoBean(Acesso.ADMIN)
 public class VeiculoBean extends GenericJsfBean {
     private @Autowired

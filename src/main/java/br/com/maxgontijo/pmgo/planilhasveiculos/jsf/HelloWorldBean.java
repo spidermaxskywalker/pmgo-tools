@@ -7,12 +7,11 @@ import br.com.maxgontijo.pmgo.planilhasveiculos.util.DadosInvalidosException;
 import br.com.maxgontijo.pmgo.planilhasveiculos.util.UtilSessao;
 import br.com.maxgontijo.pmgo.planilhasveiculos.util.UtilValidacao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-
-@ManagedBean
-@ViewScoped
+@Component
+@Scope("view")
 public class HelloWorldBean extends GenericJsfBean {
     @Autowired
     private UsuarioService usuarioService;

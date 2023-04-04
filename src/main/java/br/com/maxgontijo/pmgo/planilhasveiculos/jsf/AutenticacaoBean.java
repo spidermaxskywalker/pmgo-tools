@@ -4,13 +4,10 @@ import br.com.maxgontijo.pmgo.planilhasveiculos.service.UsuarioService;
 import br.com.maxgontijo.pmgo.planilhasveiculos.util.UtilSessao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.inject.Named;
-
-@Named
-@RequestScoped
+@Component
+@RequestScope
 public class AutenticacaoBean extends GenericJsfBean {
     private @Autowired
     UsuarioService usuarioService;

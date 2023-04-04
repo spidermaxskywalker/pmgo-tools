@@ -10,11 +10,11 @@ import org.primefaces.component.export.PDFOptions;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-@ManagedBean
-@ViewScoped
+@Component
+@Scope("view")
 @AcessoBean(Acesso.MANDADOS_MONITORADOS)
 public class VerificarMonitoradosMandadosBean extends GenericJsfBean {
     private @Autowired

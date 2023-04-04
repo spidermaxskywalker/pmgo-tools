@@ -5,16 +5,16 @@ import br.com.maxgontijo.pmgo.planilhasveiculos.model.enums.Acesso;
 import br.com.maxgontijo.pmgo.planilhasveiculos.service.UsuarioService;
 import org.primefaces.PrimeFaces;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-@ManagedBean
-@ViewScoped
+@Component
+@Scope("view")
 @AcessoBean(Acesso.ADMIN)
 public class UsuarioBean extends GenericJsfBean {
     private @Autowired

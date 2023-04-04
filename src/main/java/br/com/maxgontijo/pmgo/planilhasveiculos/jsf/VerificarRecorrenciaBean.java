@@ -5,19 +5,19 @@ import br.com.maxgontijo.pmgo.planilhasveiculos.model.enums.Acesso;
 import br.com.maxgontijo.pmgo.planilhasveiculos.service.ProcessarArquivoRecorrenciaService;
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-@ManagedBean
-@ViewScoped
+@Component
+@Scope("view")
 @AcessoBean(Acesso.RECORRENCIAS)
 public class VerificarRecorrenciaBean extends GenericJsfBean {
     private @Autowired
